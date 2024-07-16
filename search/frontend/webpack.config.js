@@ -1,6 +1,7 @@
 const path = require('path');
 const NodePolyfillPlugin = require('node-polyfill-webpack-plugin');
 const webpack = require('webpack');
+const Dotenv = require('dotenv-webpack');
 
 module.exports = {
   entry: './src/index.js',
@@ -69,7 +70,35 @@ module.exports = {
     }),
     new webpack.NormalModuleReplacementPlugin(/^node:/, (resource) => {
       resource.request = resource.request.replace(/^node:/, '');
-    })
+    }),
+    new webpack.IgnorePlugin({
+      resourceRegExp: /^http2$/
+    }),
+    new webpack.IgnorePlugin({
+      resourceRegExp: /^async_hooks$/
+    }),
+    new webpack.IgnorePlugin({
+      resourceRegExp: /^net$/
+    }),
+    new webpack.IgnorePlugin({
+      resourceRegExp: /^tls$/
+    }),
+    new webpack.IgnorePlugin({
+      resourceRegExp: /^diagnostics_channel$/
+    }),
+    new webpack.IgnorePlugin({
+      resourceRegExp: /^util\/types$/
+    }),
+    new webpack.IgnorePlugin({
+      resourceRegExp: /^perf_hooks$/
+    }),
+    new webpack.IgnorePlugin({
+      resourceRegExp: /^worker_threads$/
+    }),
+    new webpack.DefinePlugin({
+      'process.env.PUBLIC_URL': JSON.stringify(process.env.PUBLIC_URL || '.')
+    }),
+    new Dotenv()
   ],
   devServer: {
     static: {
