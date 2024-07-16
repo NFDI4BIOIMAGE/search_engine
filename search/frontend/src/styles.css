@@ -1,0 +1,32 @@
+.search-bar,
+.advanced-search-bar {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.search-results .result-item {
+  border-bottom: 1px solid #ccc;
+  padding: 10px 0;
+}
+
+input[type="text"] {
+  padding: 5px;
+  font-size: 14px;
+}
+
+button {
+  padding: 5px 10px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.result-item h2 {
+  margin: 0;
+  font-size: 18px;
+}
+
+.result-item p {
+  margin: 5px 0;
+}
+
