@@ -1,10 +1,10 @@
 C:\NFDI4BIOIMAGE\training_search_engine\search\frontend:
 
+npm install 
+
 npm install querystring-es3
 
 npm install --save-dev webpack webpack-cli webpack-dev-server babel-loader @babel/core @babel/preset-env @babel/preset-react style-loader css-loader querystring-es3
-
-npm install
 
 npm install os-browserify
 
@@ -28,6 +28,16 @@ npm install node-polyfill-webpack-Plugin
 npm install assert url util os-browserify browserify-zlib buffer stream-http https-browserify stream-browserify timers-browserify node-polyfill-webpack-plugin
 
 npm install process
+
+npm install dotenv-webpack --save-dev
+
+npm install react@latest react-dom@latest
+
+npm install axios
+
+npm run build
+
+
 
 
 

@@ -2,17 +2,14 @@ import React, { useState } from 'react';
 import SearchBar from './components/SearchBar';
 import AdvancedSearchBar from './components/AdvancedSearchBar';
 import SearchResults from './components/SearchResults';
-import { Client } from '@elastic/elasticsearch';
-
-const client = new Client({ node: 'http://localhost:9200' });
+import axios from 'axios';
 
 const App = () => {
   const [results, setResults] = useState([]);
 
   const handleSearch = async (query) => {
-    const { body } = await client.search({
-      index: 'bioimage-training',
-      body: {
+    try {
+      const response = await axios.post('http://localhost:9200/bioimage-training/_search', {
         query: {
           bool: {
             should: [
@@ -22,9 +19,11 @@ const App = () => {
             ]
           }
         }
-      }
-    });
-    setResults(body.hits.hits);
+      });
+      setResults(response.data.hits.hits);
+    } catch (error) {
+      console.error('Error searching:', error);
+    }
   };
 
   const handleAdvancedSearch = async ({ query, category, tags }) => {
@@ -33,17 +32,18 @@ const App = () => {
     if (category) mustQueries.push({ match: { category } });
     if (tags) mustQueries.push({ match: { tags } });
 
-    const { body } = await client.search({
-      index: 'bioimage-training',
-      body: {
+    try {
+      const response = await axios.post('http://localhost:9200/bioimage-training/_search', {
         query: {
           bool: {
             must: mustQueries
           }
         }
-      }
-    });
-    setResults(body.hits.hits);
+      });
+      setResults(response.data.hits.hits);
+    } catch (error) {
+      console.error('Error searching:', error);
+    }
   };
 
   return (
@@ -56,4 +56,3 @@ const App = () => {
 };
 
 export default App;
-

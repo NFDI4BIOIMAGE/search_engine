@@ -1,0 +1,40 @@
+Folder structure:
+
+
+..\search_engine
+├── elasticsearch
+├── search
+│   ├── backend
+│   │   ├── data.json
+│   │   └── index_data.py
+│   └── frontend
+│       ├── dist
+│       ├── node_modules
+│       ├── public
+│       ├── src
+│       │   ├── components
+│       │   │   ├── AdvancedSearchBar.js
+│       │   │   ├── SearchBar.js
+│       │   │   └── SearchResults.js
+│       │   ├── App.css
+│       │   ├── App.js
+│       │   ├── App.test.js
+│       │   ├── index.css
+│       │   ├── index.js
+│       │   ├── logo
+│       │   ├── reportWebVitals
+│       │   ├── setupTests
+│       │   └── styles.css
+│       ├── .env
+│       ├── .gitignore
+│       ├── npm.txt
+│       ├── package.json
+│       ├── package-lock
+│       ├── readme
+│       ├── timers-promises-mock
+│       └── webpack.config.js
+├── .gitignore
+├── elasticsearch username and Password
+├── folder structure
+├── LICENSE
+└── README
