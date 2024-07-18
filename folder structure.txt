@@ -33,6 +33,14 @@ Folder structure:
 │       ├── readme
 │       ├── timers-promises-mock
 │       └── webpack.config.js
+├── resources
+│   ├── blog_posts.yml
+│   ├── events.yml
+│   ├── materials.yml
+│   ├── nfdi4bioimage.yml
+│   ├── papers.yml
+│   ├── workflow-tools.yml
+│   └── youtube_channels.yml
 ├── .gitignore
 ├── elasticsearch username and Password
 ├── folder structure
