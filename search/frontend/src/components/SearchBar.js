@@ -1,14 +1,17 @@
+// src/components/SearchBar.js
 import React, { useState } from 'react';
 
 const SearchBar = ({ onSearch }) => {
   const [query, setQuery] = useState('');
 
   const handleSearch = () => {
-    onSearch(query);
+    if (query.trim() !== '') {
+      onSearch(query);
+    }
   };
 
   return (
-    <div className="search-bar">
+    <div>
       <input
         type="text"
         value={query}
