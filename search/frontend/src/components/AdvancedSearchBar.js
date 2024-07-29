@@ -10,7 +10,7 @@ const AdvancedSearchBar = ({ onSearch }) => {
   };
 
   return (
-    <div className="advanced-search-bar">
+    <div>
       <input
         type="text"
         value={query}
@@ -35,4 +35,3 @@ const AdvancedSearchBar = ({ onSearch }) => {
 };
 
 export default AdvancedSearchBar;
-
