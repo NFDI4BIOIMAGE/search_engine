@@ -1,11 +1,14 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const SearchBar = ({ onSearch }) => {
   const [query, setQuery] = useState('');
+  const navigate = useNavigate();
 
   const handleSearch = () => {
     if (query.trim() !== '') {
       onSearch(query);
+      navigate('/search');
     }
   };
 

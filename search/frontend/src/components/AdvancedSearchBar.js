@@ -1,12 +1,16 @@
+// src/components/AdvancedSearchBar.js
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const AdvancedSearchBar = ({ onSearch }) => {
   const [query, setQuery] = useState('');
-  const [category, setCategory] = useState('');
+  const [type, setType] = useState('');
   const [tags, setTags] = useState('');
+  const navigate = useNavigate();
 
   const handleSearch = () => {
-    onSearch({ query, category, tags });
+    onSearch({ query, type, tags });
+    navigate('/search');
   };
 
   return (
@@ -19,9 +23,9 @@ const AdvancedSearchBar = ({ onSearch }) => {
       />
       <input
         type="text"
-        value={category}
-        onChange={(e) => setCategory(e.target.value)}
-        placeholder="Category"
+        value={type}
+        onChange={(e) => setType(e.target.value)}
+        placeholder="Type"
       />
       <input
         type="text"
