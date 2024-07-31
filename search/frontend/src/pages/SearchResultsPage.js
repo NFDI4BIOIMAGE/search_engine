@@ -3,13 +3,13 @@ import SearchBar from '../components/SearchBar';
 import SearchResults from '../components/SearchResults';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../assets/styles/style.css';
-import bgHero from '../assets/images/bg-hero.jpg'; // Adjust the path as necessary
+import bgSearchbar from '../assets/images/bg-searchbar.jpg'; // Adjust the path as necessary
 
 const SearchResultsPage = ({ handleSearch, results, hasSearched }) => (
   <div>
-    {/* Hero Section Start */}
-    <div className="container-fluid bg-primary py-5 mb-5 hero-header" style={{ position: 'relative', backgroundImage: `url(${bgHero})`, backgroundSize: 'cover', backgroundPosition: 'center' }}>
-      <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', backgroundColor: 'rgba(0, 0, 0, 0.5)' }}></div>
+    {/* SearchBar Section Start */}
+    <div className="container-fluid py-5 mb-5 searchbar-header" style={{ position: 'relative', backgroundImage: `url(${bgSearchbar})`, backgroundSize: 'cover', backgroundPosition: 'center' }}>
+      <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', backgroundColor: 'rgba(0, 0, 0, 0.1)' }}></div> {/* Semi-transparent overlay */}
       <div className="container py-5" style={{ position: 'relative', zIndex: 1 }}>
         <div className="row justify-content-center py-5">
           <div className="col-lg-10 pt-lg-5 mt-lg-5 text-center">
@@ -21,7 +21,7 @@ const SearchResultsPage = ({ handleSearch, results, hasSearched }) => (
         </div>
       </div>
     </div>
-    {/* Hero Section End */}
+    {/* SearchBar Section End */}
 
     {/* Search Results Section Start */}
     <div className="container my-5">
