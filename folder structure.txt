@@ -18,6 +18,8 @@ Folder structure:
 │   │   └── index_data.py
 │   └── frontend
 │       ├── dist
+│       │   ├── bündle.js
+│       │   ├── bundle.js.LICENSE
 │       ├── node_modules
 │       ├── public
 │       ├── src

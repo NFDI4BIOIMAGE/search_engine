@@ -2,9 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
-import SearchBar from './components/SearchBar';
-import AdvancedSearchBar from './components/AdvancedSearchBar';
-import SearchResults from './components/SearchResults';
 import HomePage from './pages/HomePage';
 import AboutPage from './pages/AboutPage';
 import BlogPage from './pages/BlogPage';
@@ -14,15 +11,8 @@ import PapersPage from './pages/PapersPage';
 import WorkflowToolsPage from './pages/WorkflowToolsPage';
 import YouTubeChannelsPage from './pages/YouTubeChannelsPage';
 import MaterialPage from './pages/MaterialPage';
+import SearchResultsPage from './pages/SearchResultsPage'; // Ensure this path is correct
 import axios from 'axios';
-
-const SearchPage = ({ handleSearch, handleAdvancedSearch, results, hasSearched }) => (
-  <div>
-    <SearchBar onSearch={handleSearch} />
-    <AdvancedSearchBar onSearch={handleAdvancedSearch} />
-    <SearchResults results={results} hasSearched={hasSearched} />
-  </div>
-);
 
 const App = () => {
   const [results, setResults] = useState([]);
@@ -84,63 +74,12 @@ const App = () => {
     }
   };
 
-  const handleAdvancedSearch = async ({ query, type, tags }) => {
-    setHasSearched(true);
-    const mustQueries = [];
-    if (query) mustQueries.push({ match: { content: query } });
-    if (type) mustQueries.push({ match: { type } });
-    if (tags) mustQueries.push({ match: { tags } });
-
-    try {
-      const response = await axios.post(
-        'http://localhost:9200/bioimage-training/_search',
-        {
-          query: {
-            bool: {
-              must: mustQueries
-            }
-          }
-        },
-        {
-          auth: {
-            username: username,
-            password: password
-          }
-        }
-      );
-      if (response.data && response.data.hits && response.data.hits.hits) {
-        console.log('Advanced search results:', response.data.hits.hits); // Log the results
-        setResults(response.data.hits.hits);
-        // Save advanced search results and query to localStorage
-        localStorage.setItem('searchResults', JSON.stringify(response.data.hits.hits));
-        localStorage.setItem('hasSearched', JSON.stringify(true));
-      } else {
-        console.error('Unexpected response format:', response.data);
-        setResults([]);
-      }
-    } catch (error) {
-      console.error('Error searching:', error);
-      setResults([]);
-    }
-  };
-
   return (
     <Router>
       <Navbar />
       <Routes>
-        <Route
-          path="/"
-          element={<HomePage handleSearch={handleSearch} handleAdvancedSearch={handleAdvancedSearch} />}
-        />
-        <Route
-          path="/search"
-          element={<SearchPage
-            handleSearch={handleSearch}
-            handleAdvancedSearch={handleAdvancedSearch}
-            results={results}
-            hasSearched={hasSearched}
-          />}
-        />
+        <Route path="/" element={<HomePage handleSearch={handleSearch} />} />
+        <Route path="/search" element={<SearchResultsPage handleSearch={handleSearch} results={results} hasSearched={hasSearched} />} />
         <Route path="/about" element={<AboutPage />} />
         <Route path="/blog" element={<BlogPage />} />
         <Route path="/blog/:id" element={<BlogPostPage />} />

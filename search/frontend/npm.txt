@@ -39,6 +39,10 @@ npm run build
 
 npm install react-router-dom
 
+npm install bootstrap
+
+npm install file-loader --save-dev
+
 
 
 
