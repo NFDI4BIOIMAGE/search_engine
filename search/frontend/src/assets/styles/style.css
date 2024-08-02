@@ -1,4 +1,12 @@
-/********** Template CSS **********/
+/*** Searchbar Header ***/
+.searchbar-header {
+    background: linear-gradient(rgba(20, 20, 31, .7), rgba(20, 20, 31, .7)), url(../images/bg-searchbar.jpg);
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+/*** Other CSS remains the same ***/
 :root {
     --primary: #86B817;
     --secondary: #FE8800;
@@ -22,7 +30,6 @@
     z-index: 99;
 }
 
-
 /*** Spinner ***/
 #spinner {
     opacity: 0;
@@ -36,7 +43,6 @@
     visibility: visible;
     opacity: 1;
 }
-
 
 /*** Button ***/
 .btn {
@@ -75,7 +81,6 @@
     font-weight: normal;
     border-radius: 0px;
 }
-
 
 /*** Navbar ***/
 .navbar-light .navbar-nav .nav-link {
@@ -169,19 +174,10 @@
     }
 }
 
-
-/*** Hero Header ***/
-.hero-header {
-    background: linear-gradient(rgba(20, 20, 31, .7), rgba(20, 20, 31, .7)), url(../images/bg-searchbar.jpg);
-    background-position: center center;
-    background-repeat: no-repeat;
-    background-size: cover;
-}
-
+/*** Breadcrumb Item ***/
 .breadcrumb-item + .breadcrumb-item::before {
     color: rgba(255, 255, 255, .5);
 }
-
 
 /*** Section Title ***/
 .section-title {
@@ -222,7 +218,6 @@
     left: 0;
 }
 
-
 /*** Service ***/
 .service-item {
     box-shadow: 0 0 45px rgba(0, 0, 0, .08);
@@ -241,7 +236,6 @@
     color: var(--light) !important;
 }
 
-
 /*** Destination ***/
 .destination img {
     transition: .5s;
@@ -250,7 +244,6 @@
 .destination a:hover img {
     transform: scale(1.1);
 }
-
 
 /*** Package ***/
 .package-item {
@@ -264,7 +257,6 @@
 .package-item:hover img {
     transform: scale(1.1);
 }
-
 
 /*** Team ***/
 .team-item {
@@ -290,7 +282,6 @@
     background: var(--primary);
     color: #FFFFFF;
 }
-
 
 /*** Testimonial ***/
 .testimonial-carousel::before {
@@ -366,7 +357,6 @@
     border-color: var(--primary);
 }
 
-
 /*** Footer ***/
 .footer .btn.btn-social {
     margin-right: 5px;
@@ -431,4 +421,10 @@
     margin-right: 0;
     padding-right: 0;
     border-right: none;
+}
+
+/*** Highlight search result ***/
+.highlight {
+    background-color: yellow;
+    font-weight: bold;
 }

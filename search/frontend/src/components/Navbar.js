@@ -4,10 +4,10 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import '../assets/styles/style.css';
 import logo from '../assets/images/logo.png';
 
-const Navbar = () => {
+const Navbar = ({ resetFilters }) => {
   return (
     <nav className="navbar navbar-expand-lg navbar-light px-4 px-lg-5 py-3 py-lg-0">
-      <Link to="/" className="navbar-brand p-0">
+      <Link to="/" className="navbar-brand p-0" onClick={resetFilters}>
         <img src={logo} alt="Logo" style={{ height: '50px' }} />
       </Link>
       <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
@@ -15,7 +15,7 @@ const Navbar = () => {
       </button>
       <div className="collapse navbar-collapse" id="navbarCollapse">
         <div className="navbar-nav ms-auto py-0">
-          <Link to="/" className="nav-item nav-link">Home</Link>
+          <Link to="/" className="nav-item nav-link" onClick={resetFilters}>Home</Link>
           <Link to="/about" className="nav-item nav-link">About</Link>
           <Link to="/blog" className="nav-item nav-link">Blog</Link>
           <Link to="/events" className="nav-item nav-link">Events</Link>
