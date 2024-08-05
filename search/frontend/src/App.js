@@ -35,6 +35,16 @@ const App = () => {
       const parsedResults = JSON.parse(savedResults);
       setResults(parsedResults);
       setInitialResults(parsedResults); // Set initial results from localStorage
+
+      if (savedSelectedFilters) {
+        const parsedFilters = JSON.parse(savedSelectedFilters);
+        setSelectedFilters(parsedFilters);
+        const filteredResults = applyFilters(parsedFilters, parsedResults); // Apply filters on mount
+        const newFacets = calculateFacets(filteredResults);
+        setFacets(newFacets);
+      } else {
+        setFacets(calculateFacets(parsedResults)); // Calculate facets for unfiltered results
+      }
     }
 
     if (savedHasSearched) {
@@ -43,16 +53,6 @@ const App = () => {
 
     if (savedQuery) {
       setQuery(savedQuery);
-    }
-
-    if (savedSelectedFilters) {
-      const parsedFilters = JSON.parse(savedSelectedFilters);
-      setSelectedFilters(parsedFilters);
-      applyFilters(parsedFilters, JSON.parse(savedResults)); // Apply filters on mount
-    }
-
-    if (savedFacets) {
-      setFacets(JSON.parse(savedFacets));
     }
   }, []);
 
@@ -153,7 +153,9 @@ const App = () => {
     }
     setSelectedFilters(newSelectedFilters);
     localStorage.setItem('selectedFilters', JSON.stringify(newSelectedFilters));
-    applyFilters(newSelectedFilters, initialResults);
+    const filteredResults = applyFilters(newSelectedFilters, initialResults);
+    const newFacets = calculateFacets(filteredResults);
+    setFacets(newFacets);
   };
 
   const applyFilters = (filters, resultsToFilter) => {
@@ -195,12 +197,15 @@ const App = () => {
     }
 
     setResults(filteredResults);
+    return filteredResults;
   };
 
   const resetFilters = () => {
     setSelectedFilters({ authors: [], publicationTitles: [], types: [], tags: [], licenses: [] });
     localStorage.setItem('selectedFilters', JSON.stringify({ authors: [], publicationTitles: [], types: [], tags: [], licenses: [] }));
     setResults(initialResults);
+    const newFacets = calculateFacets(initialResults);
+    setFacets(newFacets);
   };
 
   return (

@@ -59,7 +59,7 @@ const SearchResultsPage = ({ handleSearch, results, hasSearched, query, facets, 
             </ul>
           </div>
           <div>
-            <h4>Type</h4>
+            <h4>Types</h4>
             <ul className="list-unstyled">
               {facets.types?.map(type => (
                 <li key={type.key}>
