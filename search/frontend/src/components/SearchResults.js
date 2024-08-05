@@ -33,6 +33,11 @@ const SearchResults = ({ results, hasSearched, query, selectedFilters }) => {
 
   const highlightFields = selectedFilters.authors.length > 0 ? selectedFilters.authors : [query];
 
+  const truncateText = (text, maxLength) => {
+    if (text.length <= maxLength) return text;
+    return text.substr(0, maxLength) + '...';
+  };
+
   return (
     <div>
       {results.map(result => (
@@ -50,6 +55,11 @@ const SearchResults = ({ results, hasSearched, query, selectedFilters }) => {
           <p>
             <strong>License:</strong> {highlightField(result._source.license, highlightFields)}
           </p>
+          {result._source.description && (
+            <p>
+              <strong>Abstract:</strong> {truncateText(result._source.description, 200)}
+            </p>
+          )}
           <p>
             <strong>URL:</strong> <a href={result._source.url}>{result._source.url}</a>
           </p>

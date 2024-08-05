@@ -58,6 +58,21 @@ const SearchResultsPage = ({ handleSearch, results, hasSearched, query, facets, 
               ))}
             </ul>
           </div>
+          <div>
+            <h4>Type</h4> {/* Added types */}
+            <ul className="list-unstyled">
+              {facets.types.map(type => (
+                <li key={type.key}>
+                  <input
+                    type="checkbox"
+                    checked={selectedFilters.types.includes(type.key)}
+                    onChange={() => handleFilter('types', type.key)}
+                  />
+                  <label className="ms-2">{type.key} ({type.doc_count})</label>
+                </li>
+              ))}
+            </ul>
+          </div>
         </div>
         {/* Faceted Search Sidebar End */}
 

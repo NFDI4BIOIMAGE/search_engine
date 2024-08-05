@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Route, Routes, useNavigate } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import HomePage from './pages/HomePage';
@@ -19,8 +19,8 @@ const App = () => {
   const [initialResults, setInitialResults] = useState([]); // Save initial results
   const [hasSearched, setHasSearched] = useState(false);
   const [query, setQuery] = useState('');
-  const [facets, setFacets] = useState({ authors: [], publicationTitles: [] });
-  const [selectedFilters, setSelectedFilters] = useState({ authors: [], publicationTitles: [] });
+  const [facets, setFacets] = useState({ authors: [], publicationTitles: [], types: [] }); // Added types
+  const [selectedFilters, setSelectedFilters] = useState({ authors: [], publicationTitles: [], types: [] }); // Added types
   const username = 'admin';
   const password = 'admin123';
 
@@ -57,7 +57,7 @@ const App = () => {
   }, []);
 
   const handleSearch = async (query) => {
-    resetFilters();
+    resetFilters(); // Reset filters on new search
     setHasSearched(true);
     setQuery(query);
     try {
@@ -105,21 +105,28 @@ const App = () => {
   const calculateFacets = (results) => {
     const authorCounts = {};
     const publicationTitleCounts = {};
+    const typeCounts = {}; // Added type counts
 
     results.forEach(result => {
       result._source.authors?.forEach(author => {
         authorCounts[author] = (authorCounts[author] || 0) + 1;
       });
 
-      const publicationTitle = result._source.publicationTitle;
+      const publicationTitle = result._source.name; // Updated to use 'name'
       if (publicationTitle) {
         publicationTitleCounts[publicationTitle] = (publicationTitleCounts[publicationTitle] || 0) + 1;
       }
+
+      const types = Array.isArray(result._source.type) ? result._source.type : []; // Handle types as array
+      types.forEach(type => {
+        typeCounts[type] = (typeCounts[type] || 0) + 1;
+      });
     });
 
     return {
       authors: Object.entries(authorCounts).map(([key, count]) => ({ key, doc_count: count })),
-      publicationTitles: Object.entries(publicationTitleCounts).map(([key, count]) => ({ key, doc_count: count }))
+      publicationTitles: Object.entries(publicationTitleCounts).map(([key, count]) => ({ key, doc_count: count })), // Updated to use 'name'
+      types: Object.entries(typeCounts).map(([key, count]) => ({ key, doc_count: count })) // Added types
     };
   };
 
@@ -147,8 +154,15 @@ const App = () => {
 
     if (filters.publicationTitles.length > 0) {
       filteredResults = filteredResults.filter(result => {
-        const publicationTitle = result._source.publicationTitle || '';
+        const publicationTitle = result._source.name || ''; // Updated to use 'name'
         return filters.publicationTitles.includes(publicationTitle);
+      });
+    }
+
+    if (filters.types.length > 0) { // Added types filter
+      filteredResults = filteredResults.filter(result => {
+        const types = Array.isArray(result._source.type) ? result._source.type : [];
+        return filters.types.some(filter => types.includes(filter));
       });
     }
 
@@ -156,8 +170,8 @@ const App = () => {
   };
 
   const resetFilters = () => {
-    setSelectedFilters({ authors: [], publicationTitles: [] });
-    localStorage.setItem('selectedFilters', JSON.stringify({ authors: [], publicationTitles: [] }));
+    setSelectedFilters({ authors: [], publicationTitles: [], types: [] }); // Added types
+    localStorage.setItem('selectedFilters', JSON.stringify({ authors: [], publicationTitles: [], types: [] })); // Added types
     setResults(initialResults);
   };
 
