@@ -31,7 +31,7 @@ const SearchResultsPage = ({ handleSearch, results, hasSearched, query, facets, 
           <div>
             <h4>Authors</h4>
             <ul className="list-unstyled">
-              {facets.authors.map(author => (
+              {facets.authors?.map(author => (
                 <li key={author.key}>
                   <input
                     type="checkbox"
@@ -46,7 +46,7 @@ const SearchResultsPage = ({ handleSearch, results, hasSearched, query, facets, 
           <div>
             <h4>Publication Titles</h4>
             <ul className="list-unstyled">
-              {facets.publicationTitles.map(title => (
+              {facets.publicationTitles?.map(title => (
                 <li key={title.key}>
                   <input
                     type="checkbox"
@@ -59,9 +59,9 @@ const SearchResultsPage = ({ handleSearch, results, hasSearched, query, facets, 
             </ul>
           </div>
           <div>
-            <h4>Type</h4> {/* Added types */}
+            <h4>Type</h4>
             <ul className="list-unstyled">
-              {facets.types.map(type => (
+              {facets.types?.map(type => (
                 <li key={type.key}>
                   <input
                     type="checkbox"
@@ -74,9 +74,9 @@ const SearchResultsPage = ({ handleSearch, results, hasSearched, query, facets, 
             </ul>
           </div>
           <div>
-            <h4>Tags</h4> {/* Added tags */}
+            <h4>Tags</h4>
             <ul className="list-unstyled">
-              {facets.tags.map(tag => (
+              {facets.tags?.map(tag => (
                 <li key={tag.key}>
                   <input
                     type="checkbox"
@@ -84,6 +84,21 @@ const SearchResultsPage = ({ handleSearch, results, hasSearched, query, facets, 
                     onChange={() => handleFilter('tags', tag.key)}
                   />
                   <label className="ms-2">{tag.key} ({tag.doc_count})</label>
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div>
+            <h4>Licenses</h4>
+            <ul className="list-unstyled">
+              {facets.licenses?.map(license => (
+                <li key={license.key}>
+                  <input
+                    type="checkbox"
+                    checked={selectedFilters.licenses.includes(license.key)}
+                    onChange={() => handleFilter('licenses', license.key)}
+                  />
+                  <label className="ms-2">{license.key} ({license.doc_count})</label>
                 </li>
               ))}
             </ul>

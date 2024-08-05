@@ -12,6 +12,12 @@ const SearchBar = ({ onSearch }) => {
     }
   };
 
+  const handleKeyPress = (event) => {
+    if (event.key === 'Enter') {
+      handleSearch();
+    }
+  };
+
   return (
     <div className="position-relative">
       <input
@@ -19,6 +25,7 @@ const SearchBar = ({ onSearch }) => {
         className="form-control border-0 rounded-pill w-100 py-3 ps-4 pe-5"
         value={query}
         onChange={(e) => setQuery(e.target.value)}
+        onKeyPress={handleKeyPress} // Add this line
         placeholder="Eg: Machine Learning, Data Science, etc."
         style={{ paddingRight: '120px' }} // Add padding to ensure text doesn't overlap with button
       />

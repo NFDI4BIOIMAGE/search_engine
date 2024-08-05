@@ -19,8 +19,8 @@ const App = () => {
   const [initialResults, setInitialResults] = useState([]); // Save initial results
   const [hasSearched, setHasSearched] = useState(false);
   const [query, setQuery] = useState('');
-  const [facets, setFacets] = useState({ authors: [], publicationTitles: [], types: [], tags: [] }); // Added tags
-  const [selectedFilters, setSelectedFilters] = useState({ authors: [], publicationTitles: [], types: [], tags: [] }); // Added tags
+  const [facets, setFacets] = useState({ authors: [], publicationTitles: [], types: [], tags: [], licenses: [] }); // Added licenses
+  const [selectedFilters, setSelectedFilters] = useState({ authors: [], publicationTitles: [], types: [], tags: [], licenses: [] }); // Added licenses
   const username = 'admin';
   const password = 'admin123';
 
@@ -105,8 +105,9 @@ const App = () => {
   const calculateFacets = (results) => {
     const authorCounts = {};
     const publicationTitleCounts = {};
-    const typeCounts = {}; // Added type counts
-    const tagCounts = {}; // Added tag counts
+    const typeCounts = {};
+    const tagCounts = {};
+    const licenseCounts = {};
 
     results.forEach(result => {
       result._source.authors?.forEach(author => {
@@ -118,22 +119,28 @@ const App = () => {
         publicationTitleCounts[publicationTitle] = (publicationTitleCounts[publicationTitle] || 0) + 1;
       }
 
-      const types = Array.isArray(result._source.type) ? result._source.type : []; // Handle types as array
+      const types = Array.isArray(result._source.type) ? result._source.type : [];
       types.forEach(type => {
         typeCounts[type] = (typeCounts[type] || 0) + 1;
       });
 
-      const tags = Array.isArray(result._source.tags) ? result._source.tags : []; // Handle tags as array
+      const tags = Array.isArray(result._source.tags) ? result._source.tags : [];
       tags.forEach(tag => {
         tagCounts[tag] = (tagCounts[tag] || 0) + 1;
+      });
+
+      const licenses = Array.isArray(result._source.license) ? result._source.license : [result._source.license];
+      licenses.forEach(license => {
+        licenseCounts[license] = (licenseCounts[license] || 0) + 1;
       });
     });
 
     return {
       authors: Object.entries(authorCounts).map(([key, count]) => ({ key, doc_count: count })),
-      publicationTitles: Object.entries(publicationTitleCounts).map(([key, count]) => ({ key, doc_count: count })), // Updated to use 'name'
-      types: Object.entries(typeCounts).map(([key, count]) => ({ key, doc_count: count })), // Added types
-      tags: Object.entries(tagCounts).map(([key, count]) => ({ key, doc_count: count })) // Added tags
+      publicationTitles: Object.entries(publicationTitleCounts).map(([key, count]) => ({ key, doc_count: count })),
+      types: Object.entries(typeCounts).map(([key, count]) => ({ key, doc_count: count })),
+      tags: Object.entries(tagCounts).map(([key, count]) => ({ key, doc_count: count })),
+      licenses: Object.entries(licenseCounts).map(([key, count]) => ({ key, doc_count: count }))
     };
   };
 
@@ -152,31 +159,38 @@ const App = () => {
   const applyFilters = (filters, resultsToFilter) => {
     let filteredResults = [...resultsToFilter];
 
-    if (filters.authors?.length > 0) {
+    if (filters.authors.length > 0) {
       filteredResults = filteredResults.filter(result => {
         const authors = result._source.authors || [];
         return filters.authors.some(filter => authors.includes(filter)); // OR logic
       });
     }
 
-    if (filters.publicationTitles?.length > 0) {
+    if (filters.publicationTitles.length > 0) {
       filteredResults = filteredResults.filter(result => {
         const publicationTitle = result._source.name || ''; // Updated to use 'name'
         return filters.publicationTitles.includes(publicationTitle);
       });
     }
 
-    if (filters.types?.length > 0) { // Added types filter
+    if (filters.types.length > 0) {
       filteredResults = filteredResults.filter(result => {
         const types = Array.isArray(result._source.type) ? result._source.type : [];
         return filters.types.some(filter => types.includes(filter));
       });
     }
 
-    if (filters.tags?.length > 0) { // Added tags filter
+    if (filters.tags.length > 0) {
       filteredResults = filteredResults.filter(result => {
         const tags = Array.isArray(result._source.tags) ? result._source.tags : [];
         return filters.tags.some(filter => tags.includes(filter));
+      });
+    }
+
+    if (filters.licenses.length > 0) {
+      filteredResults = filteredResults.filter(result => {
+        const licenses = Array.isArray(result._source.license) ? result._source.license : [result._source.license];
+        return filters.licenses.some(filter => licenses.includes(filter));
       });
     }
 
@@ -184,8 +198,8 @@ const App = () => {
   };
 
   const resetFilters = () => {
-    setSelectedFilters({ authors: [], publicationTitles: [], types: [], tags: [] }); // Added tags
-    localStorage.setItem('selectedFilters', JSON.stringify({ authors: [], publicationTitles: [], types: [], tags: [] })); // Added tags
+    setSelectedFilters({ authors: [], publicationTitles: [], types: [], tags: [], licenses: [] });
+    localStorage.setItem('selectedFilters', JSON.stringify({ authors: [], publicationTitles: [], types: [], tags: [], licenses: [] }));
     setResults(initialResults);
   };
 
