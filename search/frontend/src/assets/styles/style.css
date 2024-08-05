@@ -428,3 +428,75 @@
     background-color: yellow;
     font-weight: bold;
 }
+
+/*** Filter Design ***/
+.faceted-search {
+    margin-bottom: 1rem;
+    border: 1px solid #dee2e6;
+    border-radius: 0.25rem;
+    background-color: #f8f9fa;
+    overflow: hidden; /* Ensure children are contained */
+    transition: max-height 0.3s ease;
+}
+
+.faceted-search-header {
+    color: #343a40;
+    padding: 0.75rem 1.25rem;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: bold;
+}
+
+.faceted-search-header:hover {
+    background-color: #e9ecef;
+}
+
+.faceted-search-body {
+    padding: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+}
+
+.faceted-search-body.show {
+    padding: 1rem;
+}
+
+.faceted-search-body ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.faceted-search-body li {
+    padding: 0.5rem 0;
+}
+
+.faceted-search-body li label {
+    cursor: pointer;
+}
+
+.faceted-search-body li input[type="checkbox"] {
+    margin-right: 0.5rem;
+}
+
+.faceted-search-header .filter-arrow {
+    transition: transform 0.3s;
+}
+
+.faceted-search-header.collapsed .filter-arrow {
+    transform: rotate(90deg);
+}
+
+.show-more {
+    cursor: pointer;
+    color: #007bff;
+    text-align: center;
+    padding: 0.5rem 0;
+    display: block;
+}
+
+.show-more:hover {
+    text-decoration: underline;
+}

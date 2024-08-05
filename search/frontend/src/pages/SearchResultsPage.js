@@ -1,9 +1,56 @@
-import React from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import SearchBar from '../components/SearchBar';
 import SearchResults from '../components/SearchResults';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../assets/styles/style.css';
 import bgSearchbar from '../assets/images/bg-searchbar.jpg';
+
+const FilterCard = ({ title, items, field, selectedFilters, handleFilter }) => {
+  const [collapsed, setCollapsed] = useState(true);
+  const [showAll, setShowAll] = useState(false);
+  const containerRef = useRef(null);
+
+  const displayedItems = showAll ? items : items.slice(0, 5);
+
+  useEffect(() => {
+    if (collapsed) {
+      containerRef.current.style.maxHeight = '0';
+    } else {
+      containerRef.current.style.maxHeight = containerRef.current.scrollHeight + 'px';
+    }
+  }, [collapsed, showAll]);
+
+  return (
+    <div className="faceted-search">
+      <div
+        className={`faceted-search-header ${collapsed ? 'collapsed' : ''}`}
+        onClick={() => setCollapsed(!collapsed)}
+      >
+        {title}
+        <span className="filter-arrow">▶</span>
+      </div>
+      <div ref={containerRef} className={`faceted-search-body ${collapsed ? '' : 'show'}`}>
+        <ul>
+          {displayedItems?.map(item => (
+            <li key={item.key}>
+              <input
+                type="checkbox"
+                checked={selectedFilters[field].includes(item.key)}
+                onChange={() => handleFilter(field, item.key)}
+              />
+              <label>{item.key} ({item.doc_count})</label>
+            </li>
+          ))}
+        </ul>
+        {items.length > 5 && (
+          <div className="show-more" onClick={() => setShowAll(!showAll)}>
+            {showAll ? 'Show Less' : `Show More (${items.length - 5})`}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
 
 const SearchResultsPage = ({ handleSearch, results, hasSearched, query, facets, selectedFilters, handleFilter }) => (
   <div>
@@ -28,81 +75,11 @@ const SearchResultsPage = ({ handleSearch, results, hasSearched, query, facets, 
         {/* Faceted Search Sidebar Start */}
         <div className="col-md-3">
           <h3>Filter by</h3>
-          <div>
-            <h4>Authors</h4>
-            <ul className="list-unstyled">
-              {facets.authors?.map(author => (
-                <li key={author.key}>
-                  <input
-                    type="checkbox"
-                    checked={selectedFilters.authors.includes(author.key)}
-                    onChange={() => handleFilter('authors', author.key)}
-                  />
-                  <label className="ms-2">{author.key} ({author.doc_count})</label>
-                </li>
-              ))}
-            </ul>
-          </div>
-          <div>
-            <h4>Publication Titles</h4>
-            <ul className="list-unstyled">
-              {facets.publicationTitles?.map(title => (
-                <li key={title.key}>
-                  <input
-                    type="checkbox"
-                    checked={selectedFilters.publicationTitles.includes(title.key)}
-                    onChange={() => handleFilter('publicationTitles', title.key)}
-                  />
-                  <label className="ms-2">{title.key} ({title.doc_count})</label>
-                </li>
-              ))}
-            </ul>
-          </div>
-          <div>
-            <h4>Types</h4>
-            <ul className="list-unstyled">
-              {facets.types?.map(type => (
-                <li key={type.key}>
-                  <input
-                    type="checkbox"
-                    checked={selectedFilters.types.includes(type.key)}
-                    onChange={() => handleFilter('types', type.key)}
-                  />
-                  <label className="ms-2">{type.key} ({type.doc_count})</label>
-                </li>
-              ))}
-            </ul>
-          </div>
-          <div>
-            <h4>Tags</h4>
-            <ul className="list-unstyled">
-              {facets.tags?.map(tag => (
-                <li key={tag.key}>
-                  <input
-                    type="checkbox"
-                    checked={selectedFilters.tags.includes(tag.key)}
-                    onChange={() => handleFilter('tags', tag.key)}
-                  />
-                  <label className="ms-2">{tag.key} ({tag.doc_count})</label>
-                </li>
-              ))}
-            </ul>
-          </div>
-          <div>
-            <h4>Licenses</h4>
-            <ul className="list-unstyled">
-              {facets.licenses?.map(license => (
-                <li key={license.key}>
-                  <input
-                    type="checkbox"
-                    checked={selectedFilters.licenses.includes(license.key)}
-                    onChange={() => handleFilter('licenses', license.key)}
-                  />
-                  <label className="ms-2">{license.key} ({license.doc_count})</label>
-                </li>
-              ))}
-            </ul>
-          </div>
+          <FilterCard title="Authors" items={facets.authors} field="authors" selectedFilters={selectedFilters} handleFilter={handleFilter} />
+          <FilterCard title="Publication Titles" items={facets.publicationTitles} field="publicationTitles" selectedFilters={selectedFilters} handleFilter={handleFilter} />
+          <FilterCard title="Types" items={facets.types} field="types" selectedFilters={selectedFilters} handleFilter={handleFilter} />
+          <FilterCard title="Tags" items={facets.tags} field="tags" selectedFilters={selectedFilters} handleFilter={handleFilter} />
+          <FilterCard title="Licenses" items={facets.licenses} field="licenses" selectedFilters={selectedFilters} handleFilter={handleFilter} />
         </div>
         {/* Faceted Search Sidebar End */}
 
