@@ -31,6 +31,20 @@ module.exports = {
         resolve: {
           fullySpecified: false
         }
+      },
+      {
+        test: /\.(png|jpe?g|gif|svg)$/i,
+        use: [
+          {
+            loader: 'file-loader',
+            options: {
+              name: '[path][name].[ext]',
+              context: 'src/assets/images',
+              outputPath: 'images',
+              publicPath: '/dist/images',
+            },
+          },
+        ],
       }
     ]
   },

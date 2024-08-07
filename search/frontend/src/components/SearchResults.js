@@ -1,7 +1,6 @@
-// src/components/SearchResults.js
 import React from 'react';
 
-const SearchResults = ({ results, hasSearched }) => {
+const SearchResults = ({ results, hasSearched, query, selectedFilters }) => {
   if (!hasSearched) {
     return <div>Please enter a search query to see results.</div>;
   }
@@ -10,16 +9,60 @@ const SearchResults = ({ results, hasSearched }) => {
     return <div>No results found</div>;
   }
 
+  const highlightText = (text, highlight) => {
+    const parts = text.split(new RegExp(`(${highlight})`, 'gi'));
+    return parts.map((part, i) =>
+      part.toLowerCase() === highlight.toLowerCase() ? <mark key={i}>{part}</mark> : part
+    );
+  };
+
+  const highlightField = (field, highlights) => {
+    if (!field) return 'N/A';
+    if (!Array.isArray(field)) field = [field];
+    return field.map((item, i) => (
+      <span key={i}>
+        {highlights.some(highlight => item.toLowerCase().includes(highlight.toLowerCase())) ? (
+          highlightText(item, highlights.find(highlight => item.toLowerCase().includes(highlight.toLowerCase())))
+        ) : (
+          item
+        )}
+        {i < field.length - 1 && ', '}
+      </span>
+    ));
+  };
+
+  const highlightFields = selectedFilters.authors.length > 0 ? selectedFilters.authors : [query];
+
+  const truncateText = (text, maxLength) => {
+    if (text.length <= maxLength) return text;
+    return text.substr(0, maxLength) + '...';
+  };
+
   return (
     <div>
       {results.map(result => (
         <div key={result._id}>
-          <h2>{result._source.name}</h2>
-          <p><strong>Authors:</strong> {result._source.authors ? result._source.authors.join(', ') : 'N/A'}</p>
-          <p><strong>Type:</strong> {result._source.type ? result._source.type.join(', ') : 'N/A'}</p>
-          <p><strong>Tags:</strong> {result._source.tags ? result._source.tags.join(', ') : 'N/A'}</p>
-          <p><strong>License:</strong> {result._source.license ? (Array.isArray(result._source.license) ? result._source.license.join(', ') : result._source.license) : 'N/A'}</p>
-          <p><strong>URL:</strong> <a href={result._source.url}>{result._source.url}</a></p>
+          <h2>{highlightField(result._source.name, highlightFields)}</h2>
+          <p>
+            <strong>Authors:</strong> {highlightField(result._source.authors, highlightFields)}
+          </p>
+          <p>
+            <strong>Type:</strong> {highlightField(result._source.type, highlightFields)}
+          </p>
+          <p>
+            <strong>Tags:</strong> {highlightField(result._source.tags, highlightFields)}
+          </p>
+          <p>
+            <strong>License:</strong> {highlightField(result._source.license, highlightFields)}
+          </p>
+          {result._source.description && (
+            <p>
+              <strong>Abstract:</strong> {truncateText(result._source.description, 200)}
+            </p>
+          )}
+          <p>
+            <strong>URL:</strong> <a href={result._source.url}>{result._source.url}</a>
+          </p>
           <hr />
         </div>
       ))}

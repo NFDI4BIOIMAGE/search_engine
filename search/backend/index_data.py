@@ -13,7 +13,7 @@ es = Elasticsearch([{'host': 'localhost', 'port': 9200, 'scheme': 'http'}],
 )
 
 # Base path to the resources directory
-base_path = os.path.join(os.path.dirname(__file__), '..', '..', 'resources')
+base_path = os.path.join(os.path.dirname(__file__), '..','..', '..', 'resources')
 
 # List of YAML files to index
 yaml_files = [

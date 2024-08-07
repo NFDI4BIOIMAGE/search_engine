@@ -1,5 +1,14 @@
 Folder structure:
 
+..\resources
+├── blog_posts.yml
+├── events.yml
+├── materials.yml
+├── nfdi4bioimage.yml
+├── papers.yml
+├── workflow-tools.yml
+└── youtube_channels.yml
+
 
 ..\search_engine
 ├── elasticsearch
@@ -9,13 +18,40 @@ Folder structure:
 │   │   └── index_data.py
 │   └── frontend
 │       ├── dist
+│       │   ├── bündle.js
+│       │   ├── bundle.js.LICENSE
 │       ├── node_modules
 │       ├── public
 │       ├── src
+│       │   ├── assets
+│       │   │   ├── images
+│       │   │   ├── fonts
+│       │   │   └── styles
 │       │   ├── components
 │       │   │   ├── AdvancedSearchBar.js
 │       │   │   ├── SearchBar.js
-│       │   │   └── SearchResults.js
+│       │   │   ├── SearchResults.js
+│       │   │   ├── Navbar.js
+│       │   │   ├── Footer.js
+│       │   │   ├── Home.js
+│       │   │   ├── About.js
+│       │   │   ├── Blog.js
+│       │   │   ├── BlogPost.js
+│       │   │   ├── Events.js
+│       │   │   ├── Papers.js
+│       │   │   ├── WorkflowTools.js
+│       │   │   ├── YouTubeChannels.js
+│       │   │   └── Material.js
+│       │   ├── pages
+│       │   │   ├── HomePage.js
+│       │   │   ├── AboutPage.js
+│       │   │   ├── BlogPage.js
+│       │   │   ├── BlogPostPage.js
+│       │   │   ├── EventsPage.js
+│       │   │   ├── PapersPage.js
+│       │   │   ├── WorkflowToolsPage.js
+│       │   │   ├── YouTubeChannelsPage.js
+│       │   │   └── MaterialPage.js
 │       │   ├── App.css
 │       │   ├── App.js
 │       │   ├── App.test.js
@@ -33,14 +69,6 @@ Folder structure:
 │       ├── readme
 │       ├── timers-promises-mock
 │       └── webpack.config.js
-├── resources
-│   ├── blog_posts.yml
-│   ├── events.yml
-│   ├── materials.yml
-│   ├── nfdi4bioimage.yml
-│   ├── papers.yml
-│   ├── workflow-tools.yml
-│   └── youtube_channels.yml
 ├── .gitignore
 ├── elasticsearch username and Password
 ├── folder structure
