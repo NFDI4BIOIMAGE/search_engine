@@ -24,7 +24,8 @@ npm install url
 
 npm install assert
 
-npm install node-polyfill-webpack-Plugin
+npm install node-polyfill-webpack-plugin
+
 npm install assert url util os-browserify browserify-zlib buffer stream-http https-browserify stream-browserify timers-browserify node-polyfill-webpack-plugin
 
 npm install process
@@ -42,6 +43,8 @@ npm install react-router-dom
 npm install bootstrap
 
 npm install file-loader --save-dev
+
+
 
 
 

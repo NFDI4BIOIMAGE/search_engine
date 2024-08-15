@@ -1,0 +1,57 @@
+http://localhost:9200/
+
+
+Download Elasticsearch:
+
+Download address: https://www.elastic.co/downloads/elasticsearch
+
+extract it to the folder "search_engine"
+
+cd to the folder "Elasticsearch"
+cd C:\path\to\your\elasticsearch
+
+
+Set the Elasticsearch username and Password:
+bin/elasticsearch-users useradd admin -p admin123 -r superuser
+
+username: admin
+Password: admin123
+
+Exchange the Elasticsearch from https to http:
+
+C:\path\to\your\project\:\elasticsearch\config\elasticsearch.yml
+
+find this:
+# Enable encryption for HTTP API client connections, such as Kibana, Logstash, and Agents
+xpack.security.http.ssl:
+  enabled: true
+  keystore.path: certs/http.p12
+
+exchange it to:
+# Disable encryption for HTTP API client connections, such as Kibana, Logstash, and Agents
+xpack.security.http.ssl:
+enabled: false
+
+
+and:
+xpack.security.enrollment.enabled: true
+
+to:
+
+#xpack.security.enrollment.enabled: true
+
+
+now，add this at the bottom :
+
+#----------------------- END SECURITY AUTO CONFIGURATION -------------------------
+
+#----------------------- Custom CORS CONFIGURATION -------------------------------
+# Enable CORS
+http.cors.enabled: true
+http.cors.allow-origin: "http://localhost:3000"
+http.cors.allow-credentials: true
+http.cors.allow-methods: "OPTIONS, HEAD, GET, POST, PUT, DELETE"
+http.cors.allow-headers: "X-Requested-With, Content-Type, Content-Length, Authorization"
+
+
+

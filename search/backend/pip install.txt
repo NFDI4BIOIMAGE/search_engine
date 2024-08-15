@@ -1,0 +1,10 @@
+C:\NFDI4BIOIMAGE\training_search_engine\search\backend:
+
+
+pip install Elasticsearch
+
+pip install flask
+
+
+
+

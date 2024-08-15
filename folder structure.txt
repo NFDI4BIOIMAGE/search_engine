@@ -50,6 +50,7 @@ Folder structure:
 │       │   │   ├── EventsPage.js
 │       │   │   ├── PapersPage.js
 │       │   │   ├── WorkflowToolsPage.js
+│       │   │   ├── SearchResultsPage.js
 │       │   │   ├── YouTubeChannelsPage.js
 │       │   │   └── MaterialPage.js
 │       │   ├── App.css
