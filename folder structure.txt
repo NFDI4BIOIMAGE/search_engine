@@ -1,13 +1,8 @@
 Folder structure:
 
 ..\resources
-├── blog_posts.yml
-├── events.yml
-├── materials.yml
-├── nfdi4bioimage.yml
-├── papers.yml
-├── workflow-tools.yml
-└── youtube_channels.yml
+
+└── nfdi4bioimage.yml
 
 
 ..\search_engine
