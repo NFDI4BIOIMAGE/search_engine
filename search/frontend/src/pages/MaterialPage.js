@@ -50,11 +50,21 @@ const MaterialPage = () => {
   }, []);
 
   const generateFacets = (data) => {
+    const authors = {};
+    const publicationTitles = {}; // This will be derived from the "name" field
     const licenses = {};
     const types = {};
     const tags = {};
 
     data.forEach((item) => {
+      if (item.authors) {
+        item.authors.forEach(author => {
+          authors[author] = (authors[author] || 0) + 1;
+        });
+      }
+      if (item.name) { // Using the "name" field for publication titles
+        publicationTitles[item.name] = (publicationTitles[item.name] || 0) + 1;
+      }
       if (item.license) {
         const licenseArray = Array.isArray(item.license) ? item.license : [item.license];
         licenseArray.forEach(license => {
@@ -75,6 +85,8 @@ const MaterialPage = () => {
     });
 
     setFacets({
+      authors: Object.keys(authors).map(key => ({ key, doc_count: authors[key] })),
+      publicationTitles: Object.keys(publicationTitles).map(key => ({ key, doc_count: publicationTitles[key] })),
       licenses: Object.keys(licenses).map(key => ({ key, doc_count: licenses[key] })),
       types: Object.keys(types).map(key => ({ key, doc_count: types[key] })),
       tags: Object.keys(tags).map(key => ({ key, doc_count: tags[key] })),
@@ -93,7 +105,12 @@ const MaterialPage = () => {
 
   const filteredMaterials = materials.filter(material => {
     return Object.keys(selectedFilters).every(field => {
-      return selectedFilters[field].length === 0 || selectedFilters[field].includes(material[field]);
+      return selectedFilters[field].length === 0 || selectedFilters[field].some(filterValue => {
+        if (field === "publicationTitles") {
+          return material.name === filterValue;
+        }
+        return Array.isArray(material[field]) ? material[field].includes(filterValue) : material[field] === filterValue;
+      });
     });
   });
 
@@ -114,6 +131,8 @@ const MaterialPage = () => {
         <div className="row">
           <div className="col-md-3">
             <h3>Filter by</h3>
+            <FilterCard title="Authors" items={facets.authors || []} field="authors" selectedFilters={selectedFilters} handleFilter={handleFilter} />
+            <FilterCard title="Publication Titles" items={facets.publicationTitles || []} field="publicationTitles" selectedFilters={selectedFilters} handleFilter={handleFilter} />
             <FilterCard title="Licenses" items={facets.licenses || []} field="license" selectedFilters={selectedFilters} handleFilter={handleFilter} />
             <FilterCard title="Types" items={facets.types || []} field="type" selectedFilters={selectedFilters} handleFilter={handleFilter} />
             <FilterCard title="Tags" items={facets.tags || []} field="tags" selectedFilters={selectedFilters} handleFilter={handleFilter} />
@@ -124,7 +143,7 @@ const MaterialPage = () => {
               <div className="materials-list">
                 {filteredMaterials.length > 0 ? (
                   filteredMaterials.map((material, index) => (
-                    <div key={index} className="material-item">
+                    <div key={index} className="material-item mb-3">
                       <h4>{material.name}</h4>
                       {material.authors && <p><strong>Authors:</strong> {material.authors.join(', ')}</p>}
                       <p><strong>License:</strong> {Array.isArray(material.license) ? material.license.join(', ') : material.license}</p>
