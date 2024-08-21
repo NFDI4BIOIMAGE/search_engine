@@ -11,6 +11,12 @@ const MaterialPage = () => {
   const [hasLoaded, setHasLoaded] = useState(false);
 
   useEffect(() => {
+    // Retrieve filters from localStorage when the component mounts
+    const savedFilters = JSON.parse(localStorage.getItem('selectedFilters'));
+    if (savedFilters) {
+      setSelectedFilters(savedFilters);
+    }
+
     const fetchData = async () => {
       try {
         const response = await fetch('http://localhost:5000/api/materials', {
@@ -101,6 +107,7 @@ const MaterialPage = () => {
       updatedFilters[field] = [...(updatedFilters[field] || []), value];
     }
     setSelectedFilters(updatedFilters);
+    localStorage.setItem('selectedFilters', JSON.stringify(updatedFilters)); // Save filters to localStorage
   };
 
   const filteredMaterials = materials.filter(material => {
