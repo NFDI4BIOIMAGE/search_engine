@@ -26,14 +26,18 @@ const FilterCard = ({ title, items = [], field, selectedFilters = {}, handleFilt
       </div>
       <div ref={containerRef} className={`faceted-search-body ${collapsed ? '' : 'show'}`}>
         <ul>
-          {displayedItems?.map(item => (
+          {displayedItems.map(item => (
             <li key={item.key}>
               <input
                 type="checkbox"
-                checked={selectedFilters[field]?.includes(item.key)}
-                onChange={() => handleFilter(field, item.key)}
+                checked={selectedFilters[field]?.includes(item.key) || false} // Ensure `checked` is always a boolean
+                onChange={() => handleFilter(field, item.key)} // Toggle filter on change
               />
-              <label>{item.key} ({item.doc_count})</label>
+              <label
+                className={selectedFilters[field]?.includes(item.key) ? 'highlighted' : ''} // Apply highlighted class if selected
+              >
+                {item.key} ({item.doc_count})
+              </label>
             </li>
           ))}
         </ul>

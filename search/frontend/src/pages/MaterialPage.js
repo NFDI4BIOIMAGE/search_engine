@@ -121,6 +121,17 @@ const MaterialPage = () => {
     });
   });
 
+  // Helper function to highlight text
+  const highlightText = (text, highlights) => {
+    if (!text) return text;
+    const regex = new RegExp(`(${highlights.join('|')})`, 'gi');
+    return text.split(regex).map((part, index) => 
+      highlights.some(highlight => part.toLowerCase() === highlight.toLowerCase()) ? (
+        <mark key={index}>{part}</mark>
+      ) : part
+    );
+  };
+
   return (
     <div>
       <div className="container-fluid py-5 mb-5 searchbar-header" style={{ position: 'relative', backgroundImage: `url(${bgSearchbar})`, backgroundSize: 'cover', backgroundPosition: 'center' }}>
@@ -151,11 +162,11 @@ const MaterialPage = () => {
                 {filteredMaterials.length > 0 ? (
                   filteredMaterials.map((material, index) => (
                     <div key={index} className="material-item mb-3">
-                      <h4>{material.name}</h4>
-                      {material.authors && <p><strong>Authors:</strong> {material.authors.join(', ')}</p>}
-                      <p><strong>License:</strong> {Array.isArray(material.license) ? material.license.join(', ') : material.license}</p>
-                      <p><strong>Type:</strong> {Array.isArray(material.type) ? material.type.join(', ') : material.type}</p>
-                      <p><strong>Tags:</strong> {material.tags?.join(', ')}</p>
+                      <h4>{highlightText(material.name, selectedFilters.publicationTitles || [])}</h4>
+                      {material.authors && <p><strong>Authors:</strong> {highlightText(material.authors.join(', '), selectedFilters.authors || [])}</p>}
+                      <p><strong>License:</strong> {highlightText(Array.isArray(material.license) ? material.license.join(', ') : material.license, selectedFilters.licenses || [])}</p>
+                      <p><strong>Type:</strong> {highlightText(Array.isArray(material.type) ? material.type.join(', ') : material.type, selectedFilters.types || [])}</p>
+                      <p><strong>Tags:</strong> {highlightText(material.tags?.join(', '), selectedFilters.tags || [])}</p>
                       <p><strong>URL:</strong> <a href={material.url} target="_blank" rel="noopener noreferrer">{material.url}</a></p>
                     </div>
                   ))

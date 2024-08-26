@@ -423,9 +423,25 @@
     border-right: none;
 }
 
-/*** Highlight search result ***/
+
+/* Highlight search result and selected filters */
 .highlight {
-    background-color: yellow;
+    background-color: #ffffcc;
+    font-weight: bold;
+}
+
+/* Highlight selected filters options*/
+.highlighted {
+    background-color: #e0f4ff; /* Very light blue background for selected filters */
+    font-weight: bold;
+    color: #0092b3; /* Slightly darker blue text color for better contrast */
+    padding: 2px 4px;
+    border-radius: 4px;
+}
+
+/* Highlight the filter results in materials */
+mark {
+    background-color:  #ffffcc;; /* Highlight color for matching text */
     font-weight: bold;
 }
 
