@@ -31,7 +31,8 @@ const SearchResults = ({ results, hasSearched, query, selectedFilters }) => {
     ));
   };
 
-  const highlightFields = selectedFilters.authors.length > 0 ? selectedFilters.authors : [query];
+  // Highlight based on selected filters or search query
+  const highlightFields = Object.values(selectedFilters).flat().length > 0 ? Object.values(selectedFilters).flat() : [query];
 
   const truncateText = (text, maxLength) => {
     if (text.length <= maxLength) return text;
