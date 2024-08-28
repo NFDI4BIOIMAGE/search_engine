@@ -21,6 +21,14 @@ es = Elasticsearch([{'host': 'localhost', 'port': 9200, 'scheme': 'http'}],
 # Base path to the resources directory
 base_path = os.path.join(os.path.dirname(__file__), '..', '..', '..', 'resources')
 
+# Function to delete the existing index
+def delete_index(index_name):
+    try:
+        es.indices.delete(index=index_name, ignore=[400, 404])
+        logger.info(f"Deleted existing index: {index_name}")
+    except Exception as e:
+        logger.error(f"Error deleting index {index_name}: {e}")
+
 # Function to index YAML files
 def index_yaml_files():
     # Automatically gather all YAML files in the resources directory
@@ -52,6 +60,9 @@ def index_yaml_files():
         except yaml.YAMLError as e:
             logger.error(f"Error reading YAML file: {file_path} - {e}")
 
+    # Refresh the index to make the newly indexed data searchable
+    es.indices.refresh(index='bioimage-training')
+
 # Flask route to return materials
 @app.route('/api/materials', methods=['GET'])
 def get_materials():
@@ -71,6 +82,7 @@ def get_materials():
 
 # Main entry point
 if __name__ == '__main__':
-    # Index YAML files when the app starts
+    # Delete existing index and re-index YAML files when the app starts
+    delete_index('bioimage-training')
     index_yaml_files()
     app.run(debug=True)
