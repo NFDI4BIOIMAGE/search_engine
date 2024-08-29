@@ -145,7 +145,7 @@ def submit_material():
     url = data.get('url')
     yaml_file = data.get('yaml_file')
 
-    repo = get_github_repository("NFDI4BIOIMAGE/training")
+    repo = get_github_repository("SeverusYixin/Test_Appsubmitter")
     try:
         create_pull_request(repo, yaml_file, authors, license, name, description, tags, type_, url)
         return jsonify({"message": "Pull request created successfully"}), 201

@@ -11,11 +11,11 @@ const SubmitMaterialsPage = () => {
   const [yamlFiles, setYamlFiles] = useState([]);
   const [formData, setFormData] = useState({
     authors: '',
-    license: [],
+    license: '',
     name: '',
     description: '',
-    tags: [],
-    type: [],
+    tags: '',
+    type: '',
     url: '',
     yaml_file: ''
   });
@@ -121,9 +121,9 @@ const SubmitMaterialsPage = () => {
                     className="form-select" 
                     name="license" 
                     value={formData.license} 
-                    onChange={handleChange} 
-                    multiple
+                    onChange={handleChange}
                   >
+                    <option value="" disabled>Select a license</option>
                     {uniqueLicenses.map((license, index) => (
                       <option key={index} value={license}>{license}</option>
                     ))}
@@ -156,9 +156,9 @@ const SubmitMaterialsPage = () => {
                     className="form-select" 
                     name="tags" 
                     value={formData.tags} 
-                    onChange={handleChange} 
-                    multiple
+                    onChange={handleChange}
                   >
+                    <option value="" disabled>Select a tag</option>
                     {uniqueTags.map((tag, index) => (
                       <option key={index} value={tag}>{tag}</option>
                     ))}
@@ -170,9 +170,9 @@ const SubmitMaterialsPage = () => {
                     className="form-select" 
                     name="type" 
                     value={formData.type} 
-                    onChange={handleChange} 
-                    multiple
+                    onChange={handleChange}
                   >
+                    <option value="" disabled>Select a type</option>
                     {uniqueTypes.map((type, index) => (
                       <option key={index} value={type}>{type}</option>
                     ))}
@@ -197,6 +197,7 @@ const SubmitMaterialsPage = () => {
                     value={formData.yaml_file} 
                     onChange={handleChange}
                   >
+                    <option value="">Select a YAML file</option>
                     {yamlFiles.map((file, index) => (
                       <option key={index} value={file}>{file}</option>
                     ))}
