@@ -65,6 +65,9 @@ Folder structure:
 │       ├── readme
 │       ├── timers-promises-mock
 │       └── webpack.config.js
+├── appsubmitter
+│   ├── submitter.py
+│   └── requirements.txt
 ├── .gitignore
 ├── elasticsearch username and Password
 ├── folder structure
