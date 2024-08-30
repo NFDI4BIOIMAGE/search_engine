@@ -1,5 +1,6 @@
 import React from 'react';
 import SearchBar from '../components/SearchBar';
+import SubmitMaterials from '../components/SubmitMaterials';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../assets/styles/style.css';
 import bgSearchbar from '../assets/images/bg-searchbar.jpg';

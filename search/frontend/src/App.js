@@ -4,7 +4,7 @@ import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import HomePage from './pages/HomePage';
 import AboutPage from './pages/AboutPage';
-import BlogPage from './pages/BlogPage';
+import SubmitMaterialsPage from './pages/SubmitMaterialsPage'; // Import SubmitMaterialsPage
 import BlogPostPage from './pages/BlogPostPage';
 import EventsPage from './pages/EventsPage';
 import PapersPage from './pages/PapersPage';
@@ -19,8 +19,8 @@ const App = () => {
   const [initialResults, setInitialResults] = useState([]); // Save initial results
   const [hasSearched, setHasSearched] = useState(false);
   const [query, setQuery] = useState('');
-  const [facets, setFacets] = useState({ authors: [], publicationTitles: [], types: [], tags: [], licenses: [] }); // Added licenses
-  const [selectedFilters, setSelectedFilters] = useState({ authors: [], publicationTitles: [], types: [], tags: [], licenses: [] }); // Added licenses
+  const [facets, setFacets] = useState({ authors: [], publicationTitles: [], types: [], tags: [], licenses: [] });
+  const [selectedFilters, setSelectedFilters] = useState({ authors: [], publicationTitles: [], types: [], tags: [], licenses: [] });
   const username = 'admin';
   const password = 'admin123';
 
@@ -34,16 +34,16 @@ const App = () => {
     if (savedResults) {
       const parsedResults = JSON.parse(savedResults);
       setResults(parsedResults);
-      setInitialResults(parsedResults); // Set initial results from localStorage
+      setInitialResults(parsedResults);
 
       if (savedSelectedFilters) {
         const parsedFilters = JSON.parse(savedSelectedFilters);
         setSelectedFilters(parsedFilters);
-        const filteredResults = applyFilters(parsedFilters, parsedResults); // Apply filters on mount
+        const filteredResults = applyFilters(parsedFilters, parsedResults);
         const newFacets = calculateFacets(filteredResults);
         setFacets(newFacets);
       } else {
-        setFacets(calculateFacets(parsedResults)); // Calculate facets for unfiltered results
+        setFacets(calculateFacets(parsedResults));
       }
     }
 
@@ -57,7 +57,7 @@ const App = () => {
   }, []);
 
   const handleSearch = async (query) => {
-    resetFilters(); // Reset filters on new search
+    resetFilters();
     setHasSearched(true);
     setQuery(query);
     try {
@@ -83,12 +83,11 @@ const App = () => {
         console.log('Search results:', response.data.hits.hits);
         const uniqueResults = Array.from(new Map(response.data.hits.hits.map(item => [item._source.url, item])).values());
         setResults(uniqueResults);
-        setInitialResults(uniqueResults); // Save initial results
+        setInitialResults(uniqueResults);
         localStorage.setItem('searchResults', JSON.stringify(uniqueResults));
         localStorage.setItem('hasSearched', JSON.stringify(true));
         localStorage.setItem('searchQuery', query);
         
-        // Calculate facets from results
         const newFacets = calculateFacets(uniqueResults);
         setFacets(newFacets);
         localStorage.setItem('facets', JSON.stringify(newFacets));
@@ -114,7 +113,7 @@ const App = () => {
         authorCounts[author] = (authorCounts[author] || 0) + 1;
       });
 
-      const publicationTitle = result._source.name; // Updated to use 'name'
+      const publicationTitle = result._source.name;
       if (publicationTitle) {
         publicationTitleCounts[publicationTitle] = (publicationTitleCounts[publicationTitle] || 0) + 1;
       }
@@ -164,13 +163,13 @@ const App = () => {
     if (filters.authors.length > 0) {
       filteredResults = filteredResults.filter(result => {
         const authors = result._source.authors || [];
-        return filters.authors.some(filter => authors.includes(filter)); // OR logic
+        return filters.authors.some(filter => authors.includes(filter));
       });
     }
 
     if (filters.publicationTitles.length > 0) {
       filteredResults = filteredResults.filter(result => {
-        const publicationTitle = result._source.name || ''; // Updated to use 'name'
+        const publicationTitle = result._source.name || '';
         return filters.publicationTitles.includes(publicationTitle);
       });
     }
@@ -215,7 +214,7 @@ const App = () => {
         <Route path="/" element={<HomePage handleSearch={handleSearch} />} />
         <Route path="/search" element={<SearchResultsPage handleSearch={handleSearch} results={results} hasSearched={hasSearched} query={query} facets={facets} selectedFilters={selectedFilters} handleFilter={handleFilter} />} />
         <Route path="/about" element={<AboutPage />} />
-        <Route path="/blog" element={<BlogPage />} />
+        <Route path="/submit-materials" element={<SubmitMaterialsPage />} /> {/* Correct Route */}
         <Route path="/blog/:id" element={<BlogPostPage />} />
         <Route path="/events" element={<EventsPage />} />
         <Route path="/papers" element={<PapersPage />} />

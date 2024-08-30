@@ -17,7 +17,7 @@ const Navbar = ({ resetFilters }) => {
         <div className="navbar-nav ms-auto py-0">
           <Link to="/" className="nav-item nav-link" onClick={resetFilters}>Home</Link>
           <Link to="/about" className="nav-item nav-link">About</Link>
-          <Link to="/blog" className="nav-item nav-link">Blog</Link>
+          <Link to="/submit-materials" className="nav-item nav-link">Submit Materials</Link> {/* Correct Link */}
           <Link to="/events" className="nav-item nav-link">Events</Link>
           <Link to="/papers" className="nav-item nav-link">Papers</Link>
           <Link to="/workflow-tools" className="nav-item nav-link">Workflow Tools</Link>
