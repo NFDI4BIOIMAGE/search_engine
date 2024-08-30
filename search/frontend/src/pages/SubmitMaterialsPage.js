@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
+import axios from 'axios'; 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../assets/styles/style.css';
-import bgSearchbar from '../assets/images/bg-searchbar.jpg'; // Ensure this path is correct for your image
-import axios from 'axios';
+import bgSearchbar from '../assets/images/bg-searchbar.jpg'; 
 import Select from 'react-select';
-import CreatableSelect from 'react-select/creatable'; // Import CreatableSelect
+import CreatableSelect from 'react-select/creatable'; 
 
 const SubmitMaterialsPage = () => {
   const [uniqueTags, setUniqueTags] = useState([]);
