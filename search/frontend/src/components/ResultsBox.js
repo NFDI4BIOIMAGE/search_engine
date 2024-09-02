@@ -1,5 +1,5 @@
 import React from 'react';
-import { Card } from 'react-bootstrap'; // Import Card component from react-bootstrap
+import { Card } from 'react-bootstrap'; 
 
 const ResultsBox = ({ title, url, authors, description, license, type, tags, highlights }) => {
   // Function to highlight search terms or selected filters in the text

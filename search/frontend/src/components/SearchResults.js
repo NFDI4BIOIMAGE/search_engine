@@ -1,5 +1,5 @@
 import React from 'react';
-import ResultsBox from './ResultsBox'; // Import the reusable ResultsBox component
+import ResultsBox from './ResultsBox'; 
 
 const SearchResults = ({ results, hasSearched, query, selectedFilters }) => {
   if (!hasSearched) {
