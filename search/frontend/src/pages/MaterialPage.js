@@ -3,14 +3,15 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import '../assets/styles/style.css';
 import bgSearchbar from '../assets/images/bg-searchbar.jpg';
 import FilterCard from '../components/FilterCard';
-import { Spinner, Card } from 'react-bootstrap';
+import { Spinner } from 'react-bootstrap'; // Import Spinner component
+import ResultsBox from '../components/ResultsBox'; // Import the reusable ResultsBox component
 
 const MaterialPage = () => {
   const [materials, setMaterials] = useState([]);
   const [facets, setFacets] = useState({});
   const [selectedFilters, setSelectedFilters] = useState({});
   const [hasLoaded, setHasLoaded] = useState(false);
-  const [error, setError] = useState(null); 
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const savedFilters = JSON.parse(localStorage.getItem('selectedFilters'));
@@ -121,15 +122,8 @@ const MaterialPage = () => {
     });
   });
 
-  const highlightText = (text, highlights) => {
-    if (!text) return text;
-    const regex = new RegExp(`(${highlights.join('|')})`, 'gi');
-    return text.split(regex).map((part, index) => 
-      highlights.some(highlight => part.toLowerCase() === highlight.toLowerCase()) ? (
-        <mark key={index}>{part}</mark>
-      ) : part
-    );
-  };
+  // Combine selected filters to form highlights array
+  const highlightFields = Object.values(selectedFilters).flat();
 
   return (
     <div>
@@ -173,35 +167,17 @@ const MaterialPage = () => {
                 <div className="materials-list">
                   {filteredMaterials.length > 0 ? (
                     filteredMaterials.map((material, index) => (
-                      <Card className="mb-3 shadow-lg" key={index} style={{ borderRadius: '8px', overflow: 'hidden', border: '0.3px solid #ddd' }}>
-                        <Card.Body>
-                          {/* Clickable title in dark blue */}
-                          <Card.Title>
-                            <a href={material.url} target="_blank" rel="noopener noreferrer" className="text-decoration-none" style={{ color: '#1a0dab', fontSize: '1.25rem', fontWeight: 'bold' }}>
-                              {highlightText(material.name, selectedFilters.publicationTitles || [])}
-                            </a>
-                          </Card.Title>
-                          <Card.Subtitle className="mb-2 text-muted">
-                            {material.authors && (
-                              <span><strong>Authors:</strong> {highlightText(material.authors.join(', '), selectedFilters.authors || [])}</span>
-                            )}
-                          </Card.Subtitle>
-                          {material.description && (
-                            <Card.Text className="text-secondary" style={{ fontSize: '0.9rem' }}>
-                              <strong>Abstract:</strong> {material.description.length > 200 ? `${material.description.substring(0, 200)}...` : material.description}
-                            </Card.Text>
-                          )}
-                          <Card.Text>
-                            <strong>License:</strong> {highlightText(Array.isArray(material.license) ? material.license.join(', ') : material.license, selectedFilters.licenses || [])}
-                          </Card.Text>
-                          <Card.Text>
-                            <strong>Type:</strong> {highlightText(Array.isArray(material.type) ? material.type.join(', ') : material.type, selectedFilters.types || [])}
-                          </Card.Text>
-                          <Card.Text>
-                            <strong>Tags:</strong> {highlightText(material.tags?.join(', '), selectedFilters.tags || [])}
-                          </Card.Text>
-                        </Card.Body>
-                      </Card>
+                      <ResultsBox
+                        key={index}
+                        title={material.name}
+                        url={material.url}
+                        authors={material.authors}
+                        description={material.description}
+                        license={material.license}
+                        type={material.type}
+                        tags={material.tags}
+                        highlights={highlightFields}
+                      />
                     ))
                   ) : (
                     <p>No materials found with the current filters.</p>

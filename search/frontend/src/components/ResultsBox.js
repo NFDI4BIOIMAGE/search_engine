@@ -1,58 +1,57 @@
 import React from 'react';
-import { Card } from 'react-bootstrap';
+import { Card } from 'react-bootstrap'; // Import Card component from react-bootstrap
 
-/**
- * ResultsBox component to display material information in a styled card.
- *
- * @param {Object} props - Component properties.
- * @param {string} props.title - Title of the material.
- * @param {Array} props.authors - List of authors for the material.
- * @param {string} props.description - Description or abstract of the material.
- * @param {string} props.license - License information of the material.
- * @param {string} props.type - Type of the material (e.g., article, blog).
- * @param {Array} props.tags - List of tags associated with the material.
- * @param {string} props.url - URL to access the material.
- * @param {Array} props.selectedFilters - Currently selected filters for highlighting.
- */
-const ResultsBox = ({ title, authors, description, license, type, tags, url, selectedFilters = {} }) => {
+const ResultsBox = ({ title, url, authors, description, license, type, tags, highlights }) => {
+  // Function to highlight search terms or selected filters in the text
   const highlightText = (text, highlights) => {
     if (!text) return text;
     const regex = new RegExp(`(${highlights.join('|')})`, 'gi');
-    return text.split(regex).map((part, index) =>
+    return text.split(regex).map((part, i) =>
       highlights.some(highlight => part.toLowerCase() === highlight.toLowerCase()) ? (
-        <mark key={index}>{part}</mark>
+        <mark key={i}>{part}</mark>
       ) : (
         part
       )
     );
   };
 
+  // Helper function to handle missing data
+  const displayField = (field, highlights) => {
+    return field ? highlightText(field, highlights) : 'N/A';
+  };
+
+  // Formatting authors and tags as comma-separated strings
+  const formattedAuthors = authors ? authors.join(', ') : 'N/A';
+  const formattedTags = tags ? tags.join(', ') : 'N/A';
+
   return (
-    <Card className="mb-3 shadow-lg" style={{ borderRadius: '8px', overflow: 'hidden', border: '0.5px solid #ddd' }}>
+    <Card className="mb-3 shadow-lg" style={{ borderRadius: '8px', overflow: 'hidden', border: '0.3px solid #ddd' }}>
       <Card.Body>
+        {/* Clickable title integrated with the URL */}
         <Card.Title>
           <a href={url} target="_blank" rel="noopener noreferrer" className="text-decoration-none" style={{ color: '#1a0dab', fontSize: '1.25rem', fontWeight: 'bold' }}>
-            {highlightText(title, selectedFilters.publicationTitles || [])}
+            {highlightText(title, highlights)}
           </a>
         </Card.Title>
-        <Card.Subtitle className="mb-2 text-muted">
-          {authors && (
-            <span><strong>Authors:</strong> {highlightText(authors.join(', '), selectedFilters.authors || [])}</span>
-          )}
-        </Card.Subtitle>
-        {description && (
-          <Card.Text className="text-secondary" style={{ fontSize: '0.9rem' }}>
-            <strong>Abstract:</strong> {description.length > 200 ? `${description.substring(0, 200)}...` : description}
-          </Card.Text>
-        )}
-        <Card.Text>
-          <strong>License:</strong> {highlightText(license || 'N/A', selectedFilters.licenses || [])}
+        
+        <Card.Text style={{ color: '#333', marginBottom: '10px' }}>
+          <strong>Authors:</strong> {displayField(formattedAuthors, highlights)}
         </Card.Text>
-        <Card.Text>
-          <strong>Type:</strong> {highlightText(type || 'N/A', selectedFilters.types || [])}
+
+        <Card.Text style={{ color: '#333', marginBottom: '10px' }}>
+          <strong>License:</strong> {displayField(Array.isArray(license) ? license.join(', ') : license, highlights)}
         </Card.Text>
-        <Card.Text>
-          <strong>Tags:</strong> {highlightText(tags?.join(', ') || 'N/A', selectedFilters.tags || [])}
+
+        <Card.Text style={{ color: '#333', marginBottom: '10px' }}>
+          <strong>Type:</strong> {displayField(Array.isArray(type) ? type.join(', ') : type, highlights)}
+        </Card.Text>
+
+        <Card.Text style={{ color: '#333', marginBottom: '10px' }}>
+          <strong>Tags:</strong> {displayField(formattedTags, highlights)}
+        </Card.Text>
+
+        <Card.Text style={{ color: '#333', fontSize: '0.9rem', marginBottom: '0' }}>
+          <strong>Abstract:</strong> {description ? (description.length > 200 ? `${description.substring(0, 200)}...` : description) : 'N/A'}
         </Card.Text>
       </Card.Body>
     </Card>
