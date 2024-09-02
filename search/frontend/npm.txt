@@ -44,6 +44,9 @@ npm install bootstrap
 
 npm install file-loader --save-dev
 
+npm install react-select
+
+
 
 
 
