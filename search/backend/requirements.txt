@@ -1,0 +1,7 @@
+elasticsearch
+flask
+flask-cors
+pyyaml
+
+
+
