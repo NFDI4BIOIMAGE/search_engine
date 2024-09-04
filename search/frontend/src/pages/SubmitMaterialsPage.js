@@ -5,7 +5,7 @@ import '../assets/styles/style.css';
 import bgSearchbar from '../assets/images/bg-searchbar.jpg'; 
 import Select from 'react-select';
 import CreatableSelect from 'react-select/creatable';
-import { Modal, Button, Spinner } from 'react-bootstrap'; // Import Spinner along with Modal and Button
+import { Modal, Button, Spinner } from 'react-bootstrap'; 
 
 const SubmitMaterialsPage = () => {
   const [uniqueTags, setUniqueTags] = useState([]);
