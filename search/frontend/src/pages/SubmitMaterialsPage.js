@@ -233,7 +233,7 @@ const SubmitMaterialsPage = () => {
                 <div className="text-center">
                   <button 
                     type="submit" 
-                    className="btn btn-primary btn-lg"
+                    className="btn btn-primary btn-md"
                     style={{ transition: 'all 0.3s ease' }}
                     onMouseEnter={(e) => e.target.style.transform = 'scale(1.05)'}
                     onMouseLeave={(e) => e.target.style.transform = 'scale(1)'}
