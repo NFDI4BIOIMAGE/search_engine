@@ -23,31 +23,34 @@ Folder structure:
 │       │   │   ├── fonts
 │       │   │   └── styles
 │       │   ├── components
-│       │   │   ├── AdvancedSearchBar.js
-│       │   │   ├── SearchBar.js
-│       │   │   ├── SearchResults.js
-│       │   │   ├── Navbar.js
-│       │   │   ├── Footer.js
-│       │   │   ├── Home.js
 │       │   │   ├── About.js
-│       │   │   ├── Blog.js
+│       │   │   ├── AdvancedSearchBar.js
 │       │   │   ├── BlogPost.js
 │       │   │   ├── Events.js
+│       │   │   ├── FilterCard.js
+│       │   │   ├── Footer.js
+│       │   │   ├── Home.js
+│       │   │   ├── Navbar.js
+│       │   │   ├── PagesSelection.js
+│       │   │   ├── Pagination.js
 │       │   │   ├── Papers.js
+│       │   │   ├── ResultsBox.js
+│       │   │   ├── SearchBar.js
+│       │   │   ├── SearchResults.js
+│       │   │   ├── SubmitMaterials.js
 │       │   │   ├── WorkflowTools.js
-│       │   │   ├── YouTubeChannels.js
-│       │   │   └── Material.js
+│       │   │   └── YouTubeChannels.js
 │       │   ├── pages
-│       │   │   ├── HomePage.js
 │       │   │   ├── AboutPage.js
-│       │   │   ├── BlogPage.js
 │       │   │   ├── BlogPostPage.js
 │       │   │   ├── EventsPage.js
+│       │   │   ├── HomePage.js
+│       │   │   ├── MaterialPage.js
 │       │   │   ├── PapersPage.js
-│       │   │   ├── WorkflowToolsPage.js
 │       │   │   ├── SearchResultsPage.js
-│       │   │   ├── YouTubeChannelsPage.js
-│       │   │   └── MaterialPage.js
+│       │   │   ├── SubmitMaterialsPage.js
+│       │   │   ├── WorkflowToolsPage.js
+│       │   │   └── YouTubeChannelsPage.js
 │       │   ├── App.css
 │       │   ├── App.js
 │       │   ├── App.test.js
