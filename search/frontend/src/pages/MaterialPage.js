@@ -3,8 +3,10 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import '../assets/styles/style.css';
 import bgSearchbar from '../assets/images/bg-searchbar.jpg';
 import FilterCard from '../components/FilterCard';
-import { Spinner } from 'react-bootstrap'; // Import Spinner component
-import ResultsBox from '../components/ResultsBox'; // Import the reusable ResultsBox component
+import ResultsBox from '../components/ResultsBox';
+import Pagination from '../components/Pagination';
+import PagesSelection from '../components/PagesSelection';
+import { Spinner } from 'react-bootstrap';
 
 const MaterialPage = () => {
   const [materials, setMaterials] = useState([]);
@@ -12,6 +14,8 @@ const MaterialPage = () => {
   const [selectedFilters, setSelectedFilters] = useState({});
   const [hasLoaded, setHasLoaded] = useState(false);
   const [error, setError] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(10); // Default items per page
 
   useEffect(() => {
     const savedFilters = JSON.parse(localStorage.getItem('selectedFilters'));
@@ -113,7 +117,7 @@ const MaterialPage = () => {
 
   const filteredMaterials = materials.filter(material => {
     return Object.keys(selectedFilters).every(field => {
-      return selectedFilters[field].length === 0 || selectedFilters[field].some(filterValue => {
+      return selectedFilters[field]?.length === 0 || selectedFilters[field]?.some(filterValue => {
         if (field === "publicationTitles") {
           return material.name === filterValue;
         }
@@ -122,8 +126,23 @@ const MaterialPage = () => {
     });
   });
 
-  // Combine selected filters to form highlights array
   const highlightFields = Object.values(selectedFilters).flat();
+
+  // Pagination logic
+  const indexOfLastMaterial = currentPage * itemsPerPage;
+  const indexOfFirstMaterial = indexOfLastMaterial - itemsPerPage;
+  const currentMaterials = filteredMaterials.slice(indexOfFirstMaterial, indexOfLastMaterial);
+
+  const totalPages = Math.ceil(filteredMaterials.length / itemsPerPage);
+
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
+
+  const handleItemsPerPageChange = (numItems) => {
+    setItemsPerPage(numItems);
+    setCurrentPage(1); // Reset to the first page when the number of items per page changes
+  };
 
   return (
     <div>
@@ -160,29 +179,47 @@ const MaterialPage = () => {
 
           {/* Material List */}
           <div className="col-md-9">
+            <div className="d-flex justify-content-between align-items-center mb-3">
+              <p>Showing {indexOfFirstMaterial + 1} to {indexOfLastMaterial > filteredMaterials.length ? filteredMaterials.length : indexOfLastMaterial} of {filteredMaterials.length} materials</p>
+              {/* Items Per Page Dropdown */}
+              <PagesSelection
+                itemsPerPage={itemsPerPage}
+                onItemsPerPageChange={handleItemsPerPageChange}
+              />
+            </div>
+
             {hasLoaded ? (
               error ? (
                 <p className="text-danger">{error}</p>
               ) : (
-                <div className="materials-list">
-                  {filteredMaterials.length > 0 ? (
-                    filteredMaterials.map((material, index) => (
-                      <ResultsBox
-                        key={index}
-                        title={material.name}
-                        url={material.url}
-                        authors={material.authors}
-                        description={material.description}
-                        license={material.license}
-                        type={material.type}
-                        tags={material.tags}
-                        highlights={highlightFields}
-                      />
-                    ))
-                  ) : (
-                    <p>No materials found with the current filters.</p>
-                  )}
-                </div>
+                <>
+                  <div className="materials-list">
+                    {currentMaterials.length > 0 ? (
+                      currentMaterials.map((material, index) => (
+                        <ResultsBox
+                          key={index}
+                          title={material.name}
+                          url={material.url}
+                          authors={material.authors}
+                          description={material.description}
+                          license={material.license}
+                          type={material.type}
+                          tags={material.tags}
+                          highlights={highlightFields}
+                        />
+                      ))
+                    ) : (
+                      <p>No materials found with the current filters.</p>
+                    )}
+                  </div>
+
+                  {/* Pagination Controls */}
+                  <Pagination
+                    currentPage={currentPage}
+                    totalPages={totalPages}
+                    onPageChange={handlePageChange}
+                  />
+                </>
               )
             ) : (
               <div className="text-center">

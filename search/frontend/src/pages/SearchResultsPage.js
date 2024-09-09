@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import SearchBar from '../components/SearchBar';
 import SearchResults from '../components/SearchResults';
 import FilterCard from '../components/FilterCard';
+import Pagination from '../components/Pagination';  // Import Pagination
+import PagesSelection from '../components/PagesSelection';  // Import PagesSelection
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../assets/styles/style.css';
 import bgSearchbar from '../assets/images/bg-searchbar.jpg';
@@ -9,20 +11,20 @@ import bgSearchbar from '../assets/images/bg-searchbar.jpg';
 const SearchResultsPage = ({ handleSearch, results, hasSearched, query, facets }) => {
   // Initialize selectedFilters state with useState
   const [selectedFilters, setSelectedFilters] = useState({});
+  const [currentPage, setCurrentPage] = useState(1);  // Add currentPage state
+  const [itemsPerPage, setItemsPerPage] = useState(10);  // Add itemsPerPage state
 
-  // Updated handleFilter function to support multiple selections
+  // Handle filter logic as before
   const handleFilter = (field, key) => {
     setSelectedFilters(prevFilters => {
       const currentSelections = prevFilters[field] || [];
 
       if (currentSelections.includes(key)) {
-        // If the key is already selected, remove it (uncheck)
         return {
           ...prevFilters,
           [field]: currentSelections.filter(item => item !== key),
         };
       } else {
-        // If the key is not selected, add it (check)
         return {
           ...prevFilters,
           [field]: [...currentSelections, key],
@@ -31,52 +33,54 @@ const SearchResultsPage = ({ handleSearch, results, hasSearched, query, facets }
     });
   };
 
-  // Debugging: Log the current filters and data to debug
-  console.log('Selected Filters:', selectedFilters);
-  console.log('Results:', results);
-
   // Correct field names in the data
   const correctFieldName = (field) => {
     switch (field) {
       case 'publicationTitles':
-        return 'name'; // Assuming 'Publication Titles' is mapped to 'name'
+        return 'name';
       case 'types':
-        return 'type'; // Correct field name to 'type'
+        return 'type';
       case 'licenses':
-        return 'license'; // Correct field name to 'license'
+        return 'license';
       default:
-        return field; // Return the field as is for others
+        return field;
     }
   };
 
   // Filter results based on selected filters
   const filteredResults = results.filter(result => {
     return Object.keys(selectedFilters).every(field => {
-      // No filters selected for this field
       if (!selectedFilters[field].length) return true;
 
       const actualField = correctFieldName(field);
       const resultField = result[actualField] || result._source?.[actualField];
 
-      console.log(`Filtering on field: ${actualField}, resultField:`, resultField);
-
-      // If the field doesn't exist, exclude the result
       if (!resultField) return false;
 
       if (Array.isArray(resultField)) {
-        // Field is an array, check if any filter matches
         return selectedFilters[field].some(filter => resultField.includes(filter));
       } else if (typeof resultField === 'string') {
-        // Field is a string, check for a direct match
         return selectedFilters[field].includes(resultField);
       } else {
-        return false; // Handle other data types (e.g., null)
+        return false;
       }
     });
   });
 
-  // Debugging: Log the filtered results to debug
-  console.log('Filtered Results:', filteredResults);
+  // Pagination Logic
+  const indexOfLastResult = currentPage * itemsPerPage;
+  const indexOfFirstResult = indexOfLastResult - itemsPerPage;
+  const currentResults = filteredResults.slice(indexOfFirstResult, indexOfLastResult);
+  const totalPages = Math.ceil(filteredResults.length / itemsPerPage);
+
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
+
+  const handleItemsPerPageChange = (numItems) => {
+    setItemsPerPage(numItems);
+    setCurrentPage(1);  // Reset to first page when items per page changes
+  };
 
   return (
     <div>
@@ -111,7 +115,23 @@ const SearchResultsPage = ({ handleSearch, results, hasSearched, query, facets }
 
           {/* Search Results Section Start */}
           <div className="col-md-9">
-            <SearchResults results={filteredResults} hasSearched={hasSearched} query={query} selectedFilters={selectedFilters} />
+            <div className="d-flex justify-content-between align-items-center mb-3">
+              <p>Showing {indexOfFirstResult + 1} to {indexOfLastResult > filteredResults.length ? filteredResults.length : indexOfLastResult} of {filteredResults.length} results</p>
+              <PagesSelection
+                itemsPerPage={itemsPerPage}
+                onItemsPerPageChange={handleItemsPerPageChange}
+              />
+            </div>
+
+            {/* Search Results */}
+            <SearchResults results={currentResults} hasSearched={hasSearched} query={query} selectedFilters={selectedFilters} />
+
+            {/* Pagination */}
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={handlePageChange}
+            />
           </div>
           {/* Search Results Section End */}
         </div>
