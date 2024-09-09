@@ -4,7 +4,8 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import '../assets/styles/style.css';
 import bgSearchbar from '../assets/images/bg-searchbar.jpg'; 
 import Select from 'react-select';
-import CreatableSelect from 'react-select/creatable'; 
+import CreatableSelect from 'react-select/creatable';
+import { Modal, Button, Spinner } from 'react-bootstrap'; 
 
 const SubmitMaterialsPage = () => {
   const [uniqueTags, setUniqueTags] = useState([]);
@@ -13,20 +14,21 @@ const SubmitMaterialsPage = () => {
   const [yamlFiles, setYamlFiles] = useState([]);
   const [formData, setFormData] = useState({
     authors: '',
-    license: [], // Now an array to handle multiple selections
+    license: [],
     name: '',
     description: '',
-    tags: [], // Now an array to handle multiple selections and custom input
-    type: [], // Already an array
+    tags: [],
+    type: [],
     url: '',
     yaml_file: ''
   });
   const [hasLoaded, setHasLoaded] = useState(false);
   const [submissionStatus, setSubmissionStatus] = useState(null);
-  const [errors, setErrors] = useState({}); // State to handle validation errors
+  const [errors, setErrors] = useState({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
-    // Fetch unique values from Flask API
     axios.get('http://localhost:5000/api/get_unique_values')
       .then(response => {
         setUniqueTags(response.data.tags);
@@ -39,7 +41,6 @@ const SubmitMaterialsPage = () => {
         setHasLoaded(true);
       });
 
-    // Fetch YAML files from Flask API
     axios.get('http://localhost:5000/api/get_yaml_files')
       .then(response => {
         setYamlFiles(response.data);
@@ -64,8 +65,10 @@ const SubmitMaterialsPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsSubmitting(true);
+    setShowModal(true); // Show modal immediately when submission starts
+    setSubmissionStatus(null); // Reset status for a new submission
 
-    // Simple client-side validation
     let validationErrors = {};
     if (!formData.authors) validationErrors.authors = 'Authors are required';
     if (!formData.name) validationErrors.name = 'Name is required';
@@ -74,19 +77,36 @@ const SubmitMaterialsPage = () => {
     setErrors(validationErrors);
 
     if (Object.keys(validationErrors).length > 0) {
-      return; // If there are errors, do not submit the form
+      setIsSubmitting(false);
+      setShowModal(false); // Close modal if there are errors
+      return;
     }
 
     try {
       const response = await axios.post('http://localhost:5000/api/submit_material', formData);
       if (response.status === 201) {
-        alert('Submission successful');
         setSubmissionStatus('Submission successful');
+        setFormData({
+          authors: '',
+          license: [],
+          name: '',
+          description: '',
+          tags: [],
+          type: [],
+          url: '',
+          yaml_file: ''
+        });
       }
     } catch (error) {
       console.error('Error submitting material:', error);
       setSubmissionStatus('Error submitting material');
+    } finally {
+      setIsSubmitting(false);
     }
+  };
+
+  const handleCloseModal = () => {
+    setShowModal(false); // Close modal
   };
 
   return (
@@ -124,7 +144,6 @@ const SubmitMaterialsPage = () => {
         <div className="row justify-content-center">
           <div className="col-lg-8">
             <h2 className="mb-4 text-center">Submit New Training Materials</h2>
-            {submissionStatus && <p className="text-info text-center">{submissionStatus}</p>}
             {hasLoaded ? (
               <form onSubmit={handleSubmit} className="p-4 border rounded bg-light shadow-sm">
                 <div className="mb-3">
@@ -233,12 +252,13 @@ const SubmitMaterialsPage = () => {
                 <div className="text-center">
                   <button 
                     type="submit" 
-                    className="btn btn-primary btn-lg"
+                    className="btn btn-primary"
+                    disabled={isSubmitting}
                     style={{ transition: 'all 0.3s ease' }}
                     onMouseEnter={(e) => e.target.style.transform = 'scale(1.05)'}
                     onMouseLeave={(e) => e.target.style.transform = 'scale(1)'}
                   >
-                    Submit
+                    {isSubmitting ? 'Submitting...' : 'Submit'}
                   </button>
                 </div>
               </form>
@@ -248,6 +268,36 @@ const SubmitMaterialsPage = () => {
           </div>
         </div>
       </div>
+
+      {/* Modal for Submission Feedback */}
+      <Modal
+        show={showModal}
+        onHide={handleCloseModal}
+        centered
+        backdrop="static" // Always set to 'static' to prevent closing on click outside
+        keyboard={false} // Always set to false to prevent closing with the escape key
+      >
+        <Modal.Header closeButton={!isSubmitting}>
+          <Modal.Title>Submission Status</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          {isSubmitting ? (
+            <div className="d-flex justify-content-center align-items-center">
+              <Spinner animation="border" variant="primary" />
+              <span className="ms-2">Submitting...</span>
+            </div>
+          ) : (
+            <p>{submissionStatus}</p>
+          )}
+        </Modal.Body>
+        {!isSubmitting && (
+          <Modal.Footer>
+            <Button variant="secondary" onClick={handleCloseModal}>
+              Close
+            </Button>
+          </Modal.Footer>
+        )}
+      </Modal>
     </div>
   );
 };
