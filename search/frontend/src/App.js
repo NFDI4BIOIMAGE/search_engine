@@ -70,7 +70,8 @@ const App = () => {
               fields: ['name', 'content', 'tags', 'authors', 'type', 'license', 'url'],
               default_operator: 'AND'
             }
-          }
+          },
+          size: 1000  // Add the size parameter to retrieve more results，elasticsearch default size is 10
         },
         {
           auth: {
@@ -80,19 +81,17 @@ const App = () => {
         }
       );
       if (response.data && response.data.hits && response.data.hits.hits) {
-        console.log('Search results:', response.data.hits.hits);
         const uniqueResults = Array.from(new Map(response.data.hits.hits.map(item => [item._source.url, item])).values());
         setResults(uniqueResults);
         setInitialResults(uniqueResults);
         localStorage.setItem('searchResults', JSON.stringify(uniqueResults));
         localStorage.setItem('hasSearched', JSON.stringify(true));
         localStorage.setItem('searchQuery', query);
-        
+  
         const newFacets = calculateFacets(uniqueResults);
         setFacets(newFacets);
         localStorage.setItem('facets', JSON.stringify(newFacets));
       } else {
-        console.error('Unexpected response format:', response.data);
         setResults([]);
       }
     } catch (error) {
@@ -100,6 +99,7 @@ const App = () => {
       setResults([]);
     }
   };
+  
 
   const calculateFacets = (results) => {
     const authorCounts = {};

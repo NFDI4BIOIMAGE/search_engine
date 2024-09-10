@@ -1,13 +1,11 @@
-from flask import Flask, jsonify, request
-from flask_cors import CORS  # Import CORS from flask_cors
+from flask import Flask, jsonify
+from flask_cors import CORS
 import logging
 import os
 import yaml
 from elasticsearch import Elasticsearch
 
 app = Flask(__name__)
-
-# Enable CORS on your Flask app
 CORS(app)
 
 # Set up logging
@@ -31,7 +29,6 @@ def delete_index(index_name):
 
 # Function to index YAML files
 def index_yaml_files():
-    # Automatically gather all YAML files in the resources directory
     yaml_files = [f for f in os.listdir(base_path) if f.endswith('.yml') or f.endswith('.yaml')]
 
     for file_name in yaml_files:
@@ -41,11 +38,9 @@ def index_yaml_files():
                 content = yaml.safe_load(file)
                 data = content.get('resources', [])
                 logger.info(f"Indexing data from {file_path}")
-                logger.info(f"Data read from file: {data}")  # Debugging statement
                 if isinstance(data, list):
                     for item in data:
                         try:
-                            # Ensure item is a dictionary
                             if isinstance(item, dict):
                                 es.index(index='bioimage-training', body=item)
                                 logger.info(f"Indexed item: {item}")
@@ -60,29 +55,42 @@ def index_yaml_files():
         except yaml.YAMLError as e:
             logger.error(f"Error reading YAML file: {file_path} - {e}")
 
-    # Refresh the index to make the newly indexed data searchable
     es.indices.refresh(index='bioimage-training')
 
-# Flask route to return materials
+# Flask route to return materials using the Scroll API(more efficient for large datasets)
 @app.route('/api/materials', methods=['GET'])
 def get_materials():
-    query = {
-        "size": 1000,  # Adjust the size according to your needs
-        "query": {
-            "match_all": {}
-        }
-    }
     try:
-        response = es.search(index='bioimage-training', body=query)
-        materials = [doc['_source'] for doc in response['hits']['hits']]
+        materials = []
+        scroll_time = '2m'  # Time window for each scroll
+        scroll_size = 1000   # Number of documents per scroll request
+
+        # Initial request for the first scroll
+        response = es.search(
+            index='bioimage-training',
+            scroll=scroll_time,
+            size=scroll_size,
+            body={"query": {"match_all": {}}}
+        )
+
+        # Get the scroll ID and first batch of results
+        scroll_id = response['_scroll_id']
+        materials += [doc['_source'] for doc in response['hits']['hits']]
+
+        # Keep fetching while there are still results
+        while len(response['hits']['hits']) > 0:
+            response = es.scroll(scroll_id=scroll_id, scroll=scroll_time)
+            scroll_id = response['_scroll_id']
+            materials += [doc['_source'] for doc in response['hits']['hits']]
+
         return jsonify(materials)
+
     except Exception as e:
         logger.error(f"Error fetching data from Elasticsearch: {e}")
         return jsonify({"error": str(e)}), 500
 
 # Main entry point
 if __name__ == '__main__':
-    # Delete existing index and re-index YAML files when the app starts
     delete_index('bioimage-training')
     index_yaml_files()
     app.run(debug=True)
