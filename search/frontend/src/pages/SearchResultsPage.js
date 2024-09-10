@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import SearchBar from '../components/SearchBar';
 import SearchResults from '../components/SearchResults';
 import FilterCard from '../components/FilterCard';
-import Pagination from '../components/Pagination';  // Import Pagination
-import PagesSelection from '../components/PagesSelection';  // Import PagesSelection
+import Pagination from '../components/Pagination';  
+import PagesSelection from '../components/PagesSelection';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../assets/styles/style.css';
 import bgSearchbar from '../assets/images/bg-searchbar.jpg';
