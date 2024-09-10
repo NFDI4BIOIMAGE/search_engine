@@ -1,7 +1,7 @@
 import React from 'react';
 import { DropdownButton, Dropdown } from 'react-bootstrap';
 
-const ItemsPerPageDropdown = ({ itemsPerPage, onItemsPerPageChange }) => {
+const PagesSelection = ({ itemsPerPage, onItemsPerPageChange }) => {
   return (
     <DropdownButton
       id="dropdown-basic-button"
@@ -15,4 +15,4 @@ const ItemsPerPageDropdown = ({ itemsPerPage, onItemsPerPageChange }) => {
   );
 };
 
-export default ItemsPerPageDropdown;
+export default PagesSelection;
