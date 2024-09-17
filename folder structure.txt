@@ -4,6 +4,10 @@ Folder structure:
 
 └── nfdi4bioimage.yml
 
+..\
+
+└── docker-compose.yml
+
 
 ..\search_engine
 ├── elasticsearch

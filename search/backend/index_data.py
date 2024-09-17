@@ -1,25 +1,29 @@
-from flask import Flask, jsonify, request
-from flask_cors import CORS  # Import CORS from flask_cors
+from flask import Blueprint, jsonify, request, current_app
 import logging
 import os
 import yaml
 from elasticsearch import Elasticsearch
 
-app = Flask(__name__)
-
-# Enable CORS on your Flask app
-CORS(app)
+"""
+Flask Blueprints :
+Combining multiple functionalities
+Maintain a clean architecture
+Simplify deployment and scaling
+"""
+# Create a Blueprint for the index_data module
+index_data_blueprint = Blueprint('index_data', __name__)
 
 # Set up logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 # Initialize Elasticsearch connection
-es = Elasticsearch([{'host': 'localhost', 'port': 9200, 'scheme': 'http'}],
-                   basic_auth=('admin', 'admin123'))
+es_host = os.getenv('ELASTICSEARCH_HOST', 'localhost')
+es_port = int(os.getenv('ELASTICSEARCH_PORT', 9200))
+es = Elasticsearch('http://localhost:9200')
 
 # Base path to the resources directory
-base_path = os.path.join(os.path.dirname(__file__), '..', '..', '..', 'resources')
+base_path = '/resources'  # Updated path for Docker environment
 
 # Function to delete the existing index
 def delete_index(index_name):
@@ -64,7 +68,7 @@ def index_yaml_files():
     es.indices.refresh(index='bioimage-training')
 
 # Flask route to return materials
-@app.route('/api/materials', methods=['GET'])
+@index_data_blueprint.route('/api/materials', methods=['GET'])
 def get_materials():
     query = {
         "size": 1000,  # Adjust the size according to your needs
@@ -80,9 +84,10 @@ def get_materials():
         logger.error(f"Error fetching data from Elasticsearch: {e}")
         return jsonify({"error": str(e)}), 500
 
-# Main entry point
-if __name__ == '__main__':
+# Function to initialize the Elasticsearch index
+def init_app():
     # Delete existing index and re-index YAML files when the app starts
     delete_index('bioimage-training')
     index_yaml_files()
-    app.run(debug=True)
+
+# Note: No need for if __name__ == '__main__' block here, as the app is run from app.py

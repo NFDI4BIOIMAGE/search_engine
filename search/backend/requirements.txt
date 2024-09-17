@@ -1,7 +1,7 @@
-elasticsearch
 flask
-flask-cors
-pyyaml
-
-
-
+flask_cors
+PyYAML
+pandas
+elasticsearch
+PyGithub
+gunicorn  # For production WSGI server
