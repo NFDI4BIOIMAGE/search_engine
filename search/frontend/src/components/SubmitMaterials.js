@@ -5,7 +5,6 @@ const SubmitMaterials = () => {
   const [uniqueTags, setUniqueTags] = useState([]);
   const [uniqueTypes, setUniqueTypes] = useState([]);
   const [uniqueLicenses, setUniqueLicenses] = useState([]);
-  const [yamlFiles, setYamlFiles] = useState([]);
   const [formData, setFormData] = useState({
     authors: '',
     license: [],
@@ -14,7 +13,7 @@ const SubmitMaterials = () => {
     tags: [],
     type: [],
     url: '',
-    yaml_file: ''
+    yaml_file: 'nfdi4bioimage.yml'  // Set default YAML file
   });
 
   useEffect(() => {
@@ -27,12 +26,7 @@ const SubmitMaterials = () => {
       })
       .catch(error => console.error('Error fetching unique values:', error));
 
-    // Fetch YAML files from Flask API
-    axios.get('http://localhost:5000/api/get_yaml_files')
-      .then(response => {
-        setYamlFiles(response.data);
-      })
-      .catch(error => console.error('Error fetching YAML files:', error));
+    // No need to fetch YAML files since we're using a default
   }, []);
 
   const handleChange = (e) => {
@@ -63,13 +57,7 @@ const SubmitMaterials = () => {
     <div className="container mt-5">
       <h2 className="mb-4">Submit New Training Materials</h2>
       <form onSubmit={handleSubmit}>
-        {/* Authors */}
-        <div className="mb-3">
-          <label htmlFor="authors" className="form-label">Authors</label>
-          <input type="text" name="authors" className="form-control" value={formData.authors} onChange={handleChange} placeholder="Enter authors" />
-        </div>
-
-        {/* Licenses */}
+        {/* License */}
         <div className="mb-3">
           <label htmlFor="license" className="form-label">License</label>
           <select name="license" className="form-select" multiple value={formData.license} onChange={handleChange}>
@@ -79,16 +67,16 @@ const SubmitMaterials = () => {
           </select>
         </div>
 
-        {/* Name */}
+        {/* Title */}
         <div className="mb-3">
-          <label htmlFor="name" className="form-label">Name</label>
-          <input type="text" name="name" className="form-control" value={formData.name} onChange={handleChange} placeholder="Enter name" />
+          <label htmlFor="name" className="form-label">Title</label>
+          <input type="text" name="name" className="form-control" value={formData.name} onChange={handleChange} placeholder="Enter title" />
         </div>
 
-        {/* Description */}
+        {/* Authors */}
         <div className="mb-3">
-          <label htmlFor="description" className="form-label">Description</label>
-          <textarea name="description" className="form-control" value={formData.description} onChange={handleChange} placeholder="Enter description"></textarea>
+          <label htmlFor="authors" className="form-label">Authors</label>
+          <input type="text" name="authors" className="form-control" value={formData.authors} onChange={handleChange} placeholder="Enter authors" />
         </div>
 
         {/* Tags */}
@@ -103,7 +91,7 @@ const SubmitMaterials = () => {
 
         {/* Types */}
         <div className="mb-3">
-          <label htmlFor="type" className="form-label">Type</label>
+          <label htmlFor="type" className="form-label">Types</label>
           <select name="type" className="form-select" multiple value={formData.type} onChange={handleChange}>
             {uniqueTypes.map((type, index) => (
               <option key={index} value={type}>{type}</option>
@@ -111,21 +99,16 @@ const SubmitMaterials = () => {
           </select>
         </div>
 
+        {/* Description */}
+        <div className="mb-3">
+          <label htmlFor="description" className="form-label">Description</label>
+          <textarea name="description" className="form-control" value={formData.description} onChange={handleChange} placeholder="Enter description"></textarea>
+        </div>
+
         {/* URL */}
         <div className="mb-3">
           <label htmlFor="url" className="form-label">URL</label>
           <input type="text" name="url" className="form-control" value={formData.url} onChange={handleChange} placeholder="Enter URL" />
-        </div>
-
-        {/* YAML File */}
-        <div className="mb-3">
-          <label htmlFor="yaml_file" className="form-label">YAML File</label>
-          <select name="yaml_file" className="form-select" value={formData.yaml_file} onChange={handleChange}>
-            <option value="">Select a YAML file</option>
-            {yamlFiles.map((file, index) => (
-              <option key={index} value={file}>{file}</option>
-            ))}
-          </select>
         </div>
 
         {/* Submit Button */}
