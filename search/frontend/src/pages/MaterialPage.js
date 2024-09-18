@@ -72,7 +72,6 @@ const MaterialPage = () => {
           authors[author] = (authors[author] || 0) + 1;
         });
       }
-      // Removed publicationTitles facet generation
       if (item.license) {
         const licenseArray = Array.isArray(item.license) ? item.license : [item.license];
         licenseArray.forEach(license => {
@@ -94,7 +93,6 @@ const MaterialPage = () => {
 
     setFacets({
       authors: Object.keys(authors).map(key => ({ key, doc_count: authors[key] })),
-      // Removed publicationTitles from facets
       licenses: Object.keys(licenses).map(key => ({ key, doc_count: licenses[key] })),
       types: Object.keys(types).map(key => ({ key, doc_count: types[key] })),
       tags: Object.keys(tags).map(key => ({ key, doc_count: tags[key] })),
@@ -161,7 +159,6 @@ const MaterialPage = () => {
             {Object.keys(facets).length > 0 ? (
               <>
                 <FilterCard title="Authors" items={facets.authors || []} field="authors" selectedFilters={selectedFilters} handleFilter={handleFilter} />
-                {/* Removed Publication Titles FilterCard */}
                 <FilterCard title="Licenses" items={facets.licenses || []} field="license" selectedFilters={selectedFilters} handleFilter={handleFilter} />
                 <FilterCard title="Types" items={facets.types || []} field="type" selectedFilters={selectedFilters} handleFilter={handleFilter} />
                 <FilterCard title="Tags" items={facets.tags || []} field="tags" selectedFilters={selectedFilters} handleFilter={handleFilter} />
