@@ -11,7 +11,6 @@ const SubmitMaterialsPage = () => {
   const [uniqueTags, setUniqueTags] = useState([]);
   const [uniqueTypes, setUniqueTypes] = useState([]);
   const [uniqueLicenses, setUniqueLicenses] = useState([]);
-  const [yamlFiles, setYamlFiles] = useState([]);
   const [formData, setFormData] = useState({
     authors: '',
     license: [],
@@ -20,7 +19,7 @@ const SubmitMaterialsPage = () => {
     tags: [],
     type: [],
     url: '',
-    yaml_file: ''
+    yaml_file: 'nfdi4bioimage.yml'  // Set default YAML file
   });
   const [hasLoaded, setHasLoaded] = useState(false);
   const [submissionStatus, setSubmissionStatus] = useState(null);
@@ -41,11 +40,7 @@ const SubmitMaterialsPage = () => {
         setHasLoaded(true);
       });
 
-    axios.get('http://localhost:5000/api/get_yaml_files')
-      .then(response => {
-        setYamlFiles(response.data);
-      })
-      .catch(error => console.error('Error fetching YAML files:', error));
+    // No need to fetch YAML files since we have only one
   }, []);
 
   const handleChange = (selectedOptions, actionMeta) => {
@@ -71,7 +66,7 @@ const SubmitMaterialsPage = () => {
 
     let validationErrors = {};
     if (!formData.authors) validationErrors.authors = 'Authors are required';
-    if (!formData.name) validationErrors.name = 'Name is required';
+    if (!formData.name) validationErrors.name = 'Title is required';
     if (!formData.url) validationErrors.url = 'URL is required';
 
     setErrors(validationErrors);
@@ -94,7 +89,7 @@ const SubmitMaterialsPage = () => {
           tags: [],
           type: [],
           url: '',
-          yaml_file: ''
+          yaml_file: 'nfdi4bioimage.yml'  // Reset to default YAML file
         });
       }
     } catch (error) {
@@ -146,18 +141,7 @@ const SubmitMaterialsPage = () => {
             <h2 className="mb-4 text-center">Submit New Training Materials</h2>
             {hasLoaded ? (
               <form onSubmit={handleSubmit} className="p-4 border rounded bg-light shadow-sm">
-                <div className="mb-3">
-                  <label className="form-label">Authors</label>
-                  <input 
-                    type="text" 
-                    className={`form-control ${errors.authors ? 'is-invalid' : ''}`} 
-                    name="authors" 
-                    value={formData.authors} 
-                    onChange={handleInputChange}
-                    placeholder="Enter authors"
-                  />
-                  {errors.authors && <div className="invalid-feedback">{errors.authors}</div>}
-                </div>
+                {/* License */}
                 <div className="mb-3">
                   <label className="form-label">License</label>
                   <Select
@@ -172,29 +156,36 @@ const SubmitMaterialsPage = () => {
                     onChange={handleChange}
                   />
                 </div>
+
+                {/* Title */}
                 <div className="mb-3">
-                  <label className="form-label">Name</label>
+                  <label className="form-label">Title</label>
                   <input 
                     type="text" 
                     className={`form-control ${errors.name ? 'is-invalid' : ''}`} 
                     name="name" 
                     value={formData.name} 
                     onChange={handleInputChange}
-                    placeholder="Enter name"
+                    placeholder="Enter title"
                   />
                   {errors.name && <div className="invalid-feedback">{errors.name}</div>}
                 </div>
+
+                {/* Authors */}
                 <div className="mb-3">
-                  <label className="form-label">Description</label>
-                  <textarea 
-                    className="form-control" 
-                    name="description" 
-                    value={formData.description} 
+                  <label className="form-label">Authors</label>
+                  <input 
+                    type="text" 
+                    className={`form-control ${errors.authors ? 'is-invalid' : ''}`} 
+                    name="authors" 
+                    value={formData.authors} 
                     onChange={handleInputChange}
-                    placeholder="Enter description"
-                    rows="4"
-                  ></textarea>
+                    placeholder="Enter authors"
+                  />
+                  {errors.authors && <div className="invalid-feedback">{errors.authors}</div>}
                 </div>
+
+                {/* Tags */}
                 <div className="mb-3">
                   <label className="form-label">Tags</label>
                   <CreatableSelect
@@ -209,8 +200,10 @@ const SubmitMaterialsPage = () => {
                     noOptionsMessage={() => "Type to create a new tag"}
                   />
                 </div>
+
+                {/* Types */}
                 <div className="mb-3">
-                  <label className="form-label">Type</label>
+                  <label className="form-label">Types</label>
                   <Select
                     isMulti
                     name="type"
@@ -223,6 +216,21 @@ const SubmitMaterialsPage = () => {
                     onChange={handleChange}
                   />
                 </div>
+
+                {/* Description */}
+                <div className="mb-3">
+                  <label className="form-label">Description</label>
+                  <textarea 
+                    className="form-control" 
+                    name="description" 
+                    value={formData.description} 
+                    onChange={handleInputChange}
+                    placeholder="Enter description"
+                    rows="4"
+                  ></textarea>
+                </div>
+
+                {/* URL */}
                 <div className="mb-3">
                   <label className="form-label">URL</label>
                   <input 
@@ -235,20 +243,8 @@ const SubmitMaterialsPage = () => {
                   />
                   {errors.url && <div className="invalid-feedback">{errors.url}</div>}
                 </div>
-                <div className="mb-3">
-                  <label className="form-label">YAML File</label>
-                  <select 
-                    className="form-select" 
-                    name="yaml_file" 
-                    value={formData.yaml_file} 
-                    onChange={handleInputChange}
-                  >
-                    <option value="">Select a YAML file</option>
-                    {yamlFiles.map((file, index) => (
-                      <option key={index} value={file}>{file}</option>
-                    ))}
-                  </select>
-                </div>
+
+                {/* Submit Button */}
                 <div className="text-center">
                   <button 
                     type="submit" 
@@ -274,8 +270,8 @@ const SubmitMaterialsPage = () => {
         show={showModal}
         onHide={handleCloseModal}
         centered
-        backdrop="static" // Always set to 'static' to prevent closing on click outside
-        keyboard={false} // Always set to false to prevent closing with the escape key
+        backdrop="static"
+        keyboard={false}
       >
         <Modal.Header closeButton={!isSubmitting}>
           <Modal.Title>Submission Status</Modal.Title>

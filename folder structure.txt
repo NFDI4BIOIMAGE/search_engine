@@ -5,8 +5,13 @@ Folder structure:
 └── nfdi4bioimage.yml
 
 
+
 ..\search_engine
-├── elasticsearch
+├── Elasticsearch
+
+├── appsubmitter_backend
+│   ├── requirements
+│   └── submitter.py
 ├── search
 │   ├── backend
 │   │   ├── data.json

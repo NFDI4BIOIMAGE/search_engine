@@ -36,8 +36,6 @@ const SearchResultsPage = ({ handleSearch, results, hasSearched, query, facets }
   // Correct field names in the data
   const correctFieldName = (field) => {
     switch (field) {
-      case 'publicationTitles':
-        return 'name';
       case 'types':
         return 'type';
       case 'licenses':
@@ -106,7 +104,6 @@ const SearchResultsPage = ({ handleSearch, results, hasSearched, query, facets }
           <div className="col-md-3">
             <h3>Filter by</h3>
             <FilterCard title="Authors" items={facets.authors} field="authors" selectedFilters={selectedFilters} handleFilter={handleFilter} />
-            <FilterCard title="Publication Titles" items={facets.publicationTitles} field="publicationTitles" selectedFilters={selectedFilters} handleFilter={handleFilter} />
             <FilterCard title="Types" items={facets.types} field="types" selectedFilters={selectedFilters} handleFilter={handleFilter} />
             <FilterCard title="Tags" items={facets.tags} field="tags" selectedFilters={selectedFilters} handleFilter={handleFilter} />
             <FilterCard title="Licenses" items={facets.licenses} field="licenses" selectedFilters={selectedFilters} handleFilter={handleFilter} />

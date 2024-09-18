@@ -132,9 +132,6 @@ def get_github_repository(repository):
 
 @app.route('/api/submit_material', methods=['POST'])
 def submit_material():
-    """
-    Endpoint to handle the submission of new training materials.
-    """
     data = request.json
     authors = data.get('authors')
     license = data.get('license')
@@ -143,7 +140,9 @@ def submit_material():
     tags = data.get('tags')
     type_ = data.get('type')
     url = data.get('url')
-    yaml_file = data.get('yaml_file')
+
+    # Set yaml_file to the default value
+    yaml_file = 'nfdi4bioimage.yml'
 
     repo = get_github_repository("NFDI4BIOIMAGE/training")
     try:
