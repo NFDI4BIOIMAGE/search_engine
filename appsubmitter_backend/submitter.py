@@ -55,7 +55,7 @@ def get_unique_values_from_yamls():
     Get unique tags, types, and licenses from YAML files using pandas for data processing.
     """
     # Adjust the path to the correct resources directory
-    resources_dir = Path(__file__).resolve().parents[2] / 'resources'
+    resources_dir = Path('/app/resources')
     app.logger.info(f"Loading resources from directory: {resources_dir}")
     
     content = all_content(resources_dir)
@@ -186,4 +186,5 @@ def create_pull_request(repo, yaml_file, authors, license, name, description, ta
         raise Exception(f"Failed to update YAML file and create pull request: {e}")
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    # app.run(debug=True)
+    app.run(host='0.0.0.0', port=5000, debug=True)
