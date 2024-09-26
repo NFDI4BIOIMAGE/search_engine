@@ -9,16 +9,13 @@ ENV PYTHONUNBUFFERED 1
 WORKDIR /app
 
 # Copy the requirements file into the container
-COPY requirements_submitter.txt .
+COPY requirements_index.txt .
 
 # Install the dependencies
-RUN pip install --upgrade pip && pip install -r requirements_submitter.txt
+RUN pip install --upgrade pip && pip install -r requirements_index.txt
 
 # Copy the rest of the application code into the container
 COPY . .
 
-# Expose the port that the Flask app runs on
-EXPOSE 5000
-
 # Run the application
-CMD ["python", "submitter.py"]
+CMD ["python", "index_data.py"]
