@@ -91,7 +91,7 @@ def get_yaml_files():
     """
     List YAML files in a directory.
     """
-    resources_dir = Path(__file__).resolve().parents[2] / 'resources'
+    resources_dir = Path('/app/resources')
     app.logger.info(f"Listing YAML files from directory: {resources_dir}")
     yaml_files = sorted([str(yaml_file.name) for yaml_file in Path(resources_dir).glob('*.yml')])
     return jsonify(yaml_files)
@@ -103,7 +103,7 @@ def get_materials():
     Endpoint to fetch all materials.
     """
     # Adjust the path to the correct resources directory
-    resources_dir = Path(__file__).resolve().parents[2] / 'resources'
+    resources_dir = Path('/app/resources')
     app.logger.info(f"Loading materials from directory: {resources_dir}")
     
     content = all_content(resources_dir)

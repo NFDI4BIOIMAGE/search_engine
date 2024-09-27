@@ -4,7 +4,7 @@ import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import HomePage from './pages/HomePage';
 import AboutPage from './pages/AboutPage';
-import SubmitMaterialsPage from './pages/SubmitMaterialsPage'; // Import SubmitMaterialsPage
+import SubmitMaterialsPage from './pages/SubmitMaterialsPage';
 import BlogPostPage from './pages/BlogPostPage';
 import EventsPage from './pages/EventsPage';
 import PapersPage from './pages/PapersPage';
@@ -16,7 +16,7 @@ import axios from 'axios';
 
 const App = () => {
   const [results, setResults] = useState([]);
-  const [initialResults, setInitialResults] = useState([]); // Save initial results
+  const [initialResults, setInitialResults] = useState([]);
   const [hasSearched, setHasSearched] = useState(false);
   const [query, setQuery] = useState('');
   const [facets, setFacets] = useState({ authors: [], publicationTitles: [], types: [], tags: [], licenses: [] });
@@ -61,45 +61,38 @@ const App = () => {
     setHasSearched(true);
     setQuery(query);
     try {
-      const response = await axios.post(
-        'http://localhost:9200/bioimage-training/_search',
+      const response = await axios.get(
+        `${process.env.REACT_APP_BACKEND_URL}/api/search`, // Use environment variable for backend URL
         {
-          query: {
-            query_string: {
-              query: `*${query}*`,
-              fields: ['name', 'content', 'tags', 'authors', 'type', 'license', 'url'],
-              default_operator: 'AND'
-            }
-          },
-          size: 1000  // Add the size parameter to retrieve more results，elasticsearch default size is 10
-        },
-        {
+          params: { q: query }, // Send the search query as a parameter
           auth: {
             username: username,
-            password: password
-          }
+            password: password,
+          },
         }
       );
-      if (response.data && response.data.hits && response.data.hits.hits) {
-        const uniqueResults = Array.from(new Map(response.data.hits.hits.map(item => [item._source.url, item])).values());
+
+      if (response.data) {
+        const uniqueResults = Array.from(new Map(response.data.map(item => [item._source.url, item])).values());
         setResults(uniqueResults);
         setInitialResults(uniqueResults);
         localStorage.setItem('searchResults', JSON.stringify(uniqueResults));
         localStorage.setItem('hasSearched', JSON.stringify(true));
         localStorage.setItem('searchQuery', query);
-  
+
         const newFacets = calculateFacets(uniqueResults);
         setFacets(newFacets);
         localStorage.setItem('facets', JSON.stringify(newFacets));
       } else {
         setResults([]);
+        setInitialResults([]);
       }
     } catch (error) {
       console.error('Error searching:', error);
       setResults([]);
+      setInitialResults([]);
     }
   };
-  
 
   const calculateFacets = (results) => {
     const authorCounts = {};
@@ -139,7 +132,7 @@ const App = () => {
       publicationTitles: Object.entries(publicationTitleCounts).map(([key, count]) => ({ key, doc_count: count })),
       types: Object.entries(typeCounts).map(([key, count]) => ({ key, doc_count: count })),
       tags: Object.entries(tagCounts).map(([key, count]) => ({ key, doc_count: count })),
-      licenses: Object.entries(licenseCounts).map(([key, count]) => ({ key, doc_count: count }))
+      licenses: Object.entries(licenseCounts).map(([key, count]) => ({ key, doc_count: count })),
     };
   };
 
@@ -214,7 +207,7 @@ const App = () => {
         <Route path="/" element={<HomePage handleSearch={handleSearch} />} />
         <Route path="/search" element={<SearchResultsPage handleSearch={handleSearch} results={results} hasSearched={hasSearched} query={query} facets={facets} selectedFilters={selectedFilters} handleFilter={handleFilter} />} />
         <Route path="/about" element={<AboutPage />} />
-        <Route path="/submit-materials" element={<SubmitMaterialsPage />} /> {/* Correct Route */}
+        <Route path="/submit-materials" element={<SubmitMaterialsPage />} />
         <Route path="/blog/:id" element={<BlogPostPage />} />
         <Route path="/events" element={<EventsPage />} />
         <Route path="/papers" element={<PapersPage />} />
