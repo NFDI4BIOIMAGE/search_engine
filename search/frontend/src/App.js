@@ -21,8 +21,10 @@ const App = () => {
   const [query, setQuery] = useState('');
   const [facets, setFacets] = useState({ authors: [], publicationTitles: [], types: [], tags: [], licenses: [] });
   const [selectedFilters, setSelectedFilters] = useState({ authors: [], publicationTitles: [], types: [], tags: [], licenses: [] });
-  const username = 'admin';
-  const password = 'admin123';
+
+  const backendUrl = process.env.REACT_APP_BACKEND_URL || 'http://localhost:5001';
+
+  console.log('Backend URL:', backendUrl);  // To verify the value
 
   useEffect(() => {
     const savedResults = localStorage.getItem('searchResults');
@@ -62,13 +64,9 @@ const App = () => {
     setQuery(query);
     try {
       const response = await axios.get(
-        `${process.env.REACT_APP_BACKEND_URL}/api/search`, // Use environment variable for backend URL
+        `${backendUrl}/api/search`, // Use environment variable for backend URL
         {
           params: { q: query }, // Send the search query as a parameter
-          auth: {
-            username: username,
-            password: password,
-          },
         }
       );
 

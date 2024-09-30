@@ -3,24 +3,42 @@ from flask_cors import CORS
 import logging
 import os
 import yaml
-from elasticsearch import Elasticsearch
+from elasticsearch import Elasticsearch, ConnectionError
 from pathlib import Path
+import time
 
 app = Flask(__name__)
-# CORS(app)
-CORS(app, resources={r"/api/*": {"origins": "*"}})
-
+CORS(app)
 
 # Set up logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-# Initialize Elasticsearch connection (use 'elasticsearch' as the host name for the Docker container)
-es = Elasticsearch([{'host': 'elasticsearch', 'port': 9200, 'scheme': 'http'}],
-                   basic_auth=('admin', 'admin123'))
-
 # Base path to the resources directory inside the Docker container
 base_path = Path('/app/resources')
+
+def connect_elasticsearch():
+    es = None
+    for attempt in range(10):
+        try:
+            es = Elasticsearch(
+                [{'host': 'elasticsearch', 'port': 9200, 'scheme': 'http'}],
+                basic_auth=('admin', 'admin123')
+            )
+            if es.ping():
+                logger.info("Connected to Elasticsearch")
+                return es
+            else:
+                logger.error("Elasticsearch ping failed")
+        except ConnectionError:
+            logger.error("Elasticsearch not ready, retrying in 5 seconds...")
+            time.sleep(5)
+        except Exception as e:
+            logger.error(f"Unexpected error: {e}")
+            time.sleep(5)
+    raise Exception("Could not connect to Elasticsearch after several attempts")
+
+es = connect_elasticsearch()
 
 # Function to delete the existing index
 def delete_index(index_name):
@@ -38,7 +56,7 @@ def index_yaml_files():
         for file_name in yaml_files:
             file_path = base_path / file_name
             try:
-                with open(file_path, 'r') as file:
+                with open(file_path, 'r', encoding='utf-8') as file:
                     content = yaml.safe_load(file)
                     data = content.get('resources', [])
                     logger.info(f"Indexing data from {file_path}")
@@ -107,18 +125,20 @@ def search():
                 "query": {
                     "query_string": {
                         "query": f"*{query}*",
-                        "fields": ["name", "content", "tags", "authors", "type", "license", "url"],
+                        "fields": ["name", "description", "tags", "authors", "type", "license", "url"],
                         "default_operator": "AND"
                     }
                 }
             },
             size=1000  # Retrieve up to 1000 results
         )
-        return jsonify([doc['_source'] for doc in es_response['hits']['hits']])
+        return jsonify(es_response['hits']['hits'])
     except Exception as e:
         logger.error(f"Error searching in Elasticsearch: {e}")
         return jsonify({"error": str(e)}), 500
 
 # Main entry point
 if __name__ == '__main__':
+    delete_index('bioimage-training')
+    index_yaml_files()
     app.run(host='0.0.0.0', port=5000, debug=True)
