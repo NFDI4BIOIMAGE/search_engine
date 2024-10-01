@@ -19,11 +19,12 @@ base_path = Path('/app/resources')
 
 def connect_elasticsearch():
     es = None
-    for attempt in range(10):
+    max_attempts = 60  # Increase the number of attempts
+    for attempt in range(max_attempts):
         try:
             es = Elasticsearch(
                 [{'host': 'elasticsearch', 'port': 9200, 'scheme': 'http'}],
-                basic_auth=('admin', 'admin123')
+                timeout=30  # Increase timeout for each request
             )
             if es.ping():
                 logger.info("Connected to Elasticsearch")
@@ -31,11 +32,11 @@ def connect_elasticsearch():
             else:
                 logger.error("Elasticsearch ping failed")
         except ConnectionError:
-            logger.error("Elasticsearch not ready, retrying in 5 seconds...")
-            time.sleep(5)
+            logger.error(f"Elasticsearch not ready, attempt {attempt+1}/{max_attempts}, retrying in 10 seconds...")
+            time.sleep(10)  # Increase the interval between retries
         except Exception as e:
             logger.error(f"Unexpected error: {e}")
-            time.sleep(5)
+            time.sleep(10)
     raise Exception("Could not connect to Elasticsearch after several attempts")
 
 es = connect_elasticsearch()
